@@ -19,6 +19,8 @@ al cliente web). Se puede usar como función o como construcción del lenguaje (
 
 echo "<p>Esto es un párrafo HTML enviado con echo</p>";
 
+$nombre = "Juan";
+echo "<p>Hola, $nombre, ¿cómo estás?</p>";
 
 ?>
   </body>
