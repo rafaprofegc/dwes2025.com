@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="utf-8">
-    <title>Tipos de datos</title>
+    <title>Variables</title>
   </head>
   <body>
 <h1>Variables</h1>
@@ -110,6 +110,15 @@ echo "El archivo subido es $path_archivo<br>";
 
 $precio_rebajado = PRECIO_BASE - PRECIO_BASE * 0.25;
 echo "El precio rebajado es $precio_rebajado<br>";
+
+// 2ª forma: mediante la palabra clave const
+const SESION_USUARIO = 600;
+echo "La sesión de usuario finaliza en " . SESION_USUARIO . " segundos<br>";
+
+// Constantes predefinidas
+echo "Este script es " . __FILE__ . " y está en el directorio " 
+. __DIR__ . ". El número de línea es " . __LINE__ . "<br>";
+
 ?>
 
 
