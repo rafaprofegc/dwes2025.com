@@ -102,7 +102,6 @@ else {
 echo "</p>";
 
 if( $edad >= 18 and $edad <= 65 ) { ?>
-
   <h3>Servicios del gimnasio disponibles</h3>
   <ul>
     <li>Spinning</li>
@@ -120,6 +119,230 @@ else { ?>
   </ul>
 <?php
 }
+
+$tipoCarnet = "C1";
+if( $tipoCarnet === "C1" ) 
+  echo <<<CARNETB1
+  <h2>Documentación para solicitar la tarjeta de transporte</h2>
+  <ul>
+    <li>Fotocopia del carnet de conducir</li>
+    <li>Certificado de penales</li>
+    <li>Carnet B2</li>
+  </ul>
+  CARNETB1;
 ?>
+<h2>Sentencia if anidada</h2>
+<?php
+$nota = 6.5;
+echo "<p>Con la nota $nota tienes un ";
+if( $nota >= 0 && $nota < 5 ) {
+  echo "Suspenso";
+}
+else {
+  if( $nota < 6) {
+    echo "Suficiente";
+  }
+  else {
+    if( $nota < 7 ) {
+      echo "Bien";
+    }
+    else {
+      if( $nota < 9 ) {
+        echo "Notable";
+      }
+      else {
+        if( $nota <= 10 ) {
+          echo "Sobresaliente";
+        }
+        else {
+          echo "Error. La nota no puede ser mayor que 10";
+        }
+      }
+    }
+  }
+}
+echo "</p>";
+
+echo "<p>Con una nota de $nota tienes un: ";
+if( $nota >= 0 && $nota < 5 ) {
+  echo "Suspenso";
+}
+else if( $nota < 6 ) {
+  echo "Aprobado";
+}
+else if( $nota < 7 ) {
+  echo "Bien";
+}
+else if( $nota < 9 ) {
+  echo "Notable";
+}
+else if( $nota <= 10 ) {
+  echo "Sobresaliente";
+}
+else {
+  echo "Error. La nota no puede ser mayor que 10";
+}
+echo "</p>";
+?>
+<h2>Estructura condicional múltiple</h2>
+<?php
+// Sentencia switch
+/*
+switch( <expresión> ) {
+  case <valor1>:
+    // Sentencias a ejecutar si expresión === valor1
+    break;
+
+  case <valor2>:
+    // Sentencias a ejecutar si expresión === valor2
+
+  ....
+  case <valorN>:
+    // Sentencias a ejecutar si expresión === valorN
+  [default:
+    // Sentencias si expresión !== de todos los valores
+  ]
+}
+  // Siguiente sentencia a switch
+*/
+$nota = 7;
+echo "<p>Con un $nota tienes un ";
+switch($nota) {
+  case 0:
+  case 1:
+  case 2:
+  case 3:
+  case 4:
+    echo "Suspenso";
+    break;
+  case 5:
+    echo "Aprobado";
+    break;
+  case 6:
+    echo "Bien";
+    break;
+  case 7:
+  case 8:
+    echo "Notable";
+    break;
+  case 9:
+  case 10:
+    echo "Sobresaliente";
+    break;
+  default:
+    echo "La nota tiene que estar enter 0 y 10";
+}
+echo "</p>";
+
+$perfil = "admin";
+echo "<p>Con un perfil de $perfil tienes acceos a: ";
+switch( $perfil ) {
+  case "user":
+    echo "Lectura y escritura en la BD";
+    break;
+  case "admin":
+    echo "Control total en la BD";
+    break;
+  case "invitado":
+    echo "Lectura en la BD";
+    break;
+  default:
+    echo "El perfil no es correcto";
+}
+echo "</p>";
+?>
+<h2>Expresión match</h2>
+<?php
+$nota_suspensa = 4.5;
+$calificacion = match($nota) {
+  0, 1, 2, 3, 4, $nota_suspensa     => "Suspenso",
+  4 + 1, 6 - 1                 => "Aprobado",
+  "5"               => "Aprobado",
+  6                 => "Bien",
+  7,8               => "Notable",
+  9,10              => "Sobresaliente",
+  default           => "Error. La nota tiene que estar entre 0 y 10"
+};
+
+echo "<p>Con una nota de $nota tienes un $calificacion</p>";
+?>
+<h2>Operador ternario</h2>
+<?php
+// Sintaxis: 
+//  <condición> ? <expresión_true> : <expresión_false>;
+
+$nota = 6;
+$resultado = $nota >= 5 ? "Con un $nota, estás APROBADO" : "Con un $nota, estás SUSPENSO";
+echo "<p>$resultado</p>";
+
+$nombre = "Juan Gómez";
+$conBeca = false;
+?>
+<form method="POST">
+<input type="text" name="nombre" size="30" value="<?=isset($nombre) ? $nombre : ""?>">
+<br>
+<input type="checkbox" name="conBeca" <?=$conBeca ? "checked" : ""?> value="Si">
+</form>
+
+<h2>Operador de fusión de null</h2>
+<?php
+
+$metodo = "POST";
+$segundoMetodo = "GET";
+$por_defecto ="main";
+
+$resultado = $metodo ?? $segundoMetodo ?? $por_defecto;
+echo "<p>El resultado es: $resultado</p>";
+
+$metodo = null;
+$resultado = $metodo ?? $segundoMetodo ?? $por_defecto;
+echo "<p>El resultado es: $resultado</p>";
+
+$segundoMetodo = null;
+$resultado = $metodo ?? $segundoMetodo ?? $por_defecto;
+echo "<p>El resultado es: $resultado</p>";
+?>
+
+<h2>Bucles</h2>
+<ul>
+  <li>For con contador (estilo de Java y C++)</li>
+  <li>For para colecciones de datos</li>
+  <li>While</li>
+  <li>Do .. while</li>
+  <li>Sentencias break y continue</li>
+</ul>
+
+<h3>Bucle for con contador de bucle</h3>
+<?php
+// Tabla de multiplicar
+$numero = 4;
+echo "<p>La tabla de multiplicar del 4:<br>";
+for( $i = 1; $i<= 10; $i++) {
+  echo "$numero x $i = " . $numero * $i . "<br>";
+}
+echo "</p>";
+
+echo "<p>Cuenta atrás</p>";
+for( $i = 10; $i >= 0; $i--) {
+  echo "Quedan $i segundos<br>";
+}
+echo "¡Ignición!</p>";
+
+// Varias expresiones en el inicio del contador
+// y en la parte del incremento
+echo "<p>";
+for( $i = 10, $j = 0; $i >= 5 && $j < 8; $i--, $j++) {
+  echo "Valor de i es $i y valor de j es $j<br>";
+}
+echo "</p>";
+
+echo "<p>";
+// Visualizar los números pares entre 2 y 20
+for( $i = 2; $i <= 20; $i+=2 ) {
+  echo "El número par es $i<br>";
+}
+echo "</p>";
+?>
+
 </body>
 </html>
