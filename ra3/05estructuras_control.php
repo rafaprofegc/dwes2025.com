@@ -342,7 +342,151 @@ for( $i = 2; $i <= 20; $i+=2 ) {
   echo "El número par es $i<br>";
 }
 echo "</p>";
+
+/*
+for(;;) {
+
+}
+*/
 ?>
 
+<h3>Bucle while</h3>
+<?php
+// Sintaxis:
+//  while(<condición>) sentencia;
+
+// Sumar números pares que se generan aletatoriamente
+// hasta que salga el 0
+
+$numero = rand(0,10);
+$total = 0;
+echo "<p>";
+while( $numero ) {
+  echo "El número generado es $numero<br>";
+  if( !($numero % 2) ) $total+=$numero;
+
+  $numero = rand(0,10);
+}
+echo "El total de los pares es $total</p>";
+?>
+<h3>Bucle do .. while</h3>
+<?php
+// Sintaxis:
+/*
+    do <sentencia> while(<condición>);
+
+    do {
+    
+    }
+    while (<condición>);
+*/
+// Contar cuantos números impares se
+// generan aleatoriamente entre -5 y 50
+// hasta que se genere uno negativo
+
+$contador = 0;
+echo "<p>";
+do {
+  $numero = rand(-5,50);
+  echo "El número generado es $numero<br>";
+  if( $numero % 2 ) $contador++;
+}
+while($numero >= 0);
+
+echo "Se han generado $contador números impares</p>";
+?>
+<h3>Sentencias break y continue</h3>
+<?php
+/*
+  break -> Termina la iteración actual y se sale del bucle.
+  continue -> Termina la iteración actual e inicia la siguiente, previa
+              comprobación de la condición de permanencia en el bucle.
+*/
+
+// Simulación del bucle repetir .. hasta
+// Generar 20 números aleatorios hasta que se genera el 0
+// y presentar en color rojo los que son múltiplos de 3.
+
+while(true) {
+  $numero = rand(0,20);
+
+  if( $numero % 3 || !$numero ) {
+    echo "El número generado es $numero<br>";
+  }
+  else {
+    echo "<span style='color:red;'>El número generado es $numero</span><br>";
+  }
+
+  if( !$numero ) break;
+}
+
+// Generar números aleatorios entre 1 y 10, y sumar
+// los pares hasta que la suma sea superior a 100 o 
+// se haya generado 20 números como máximo.
+
+echo "<p>";
+$sumaPares = 0;
+$numeros = 0;
+while( $numeros < 20 ) {
+  $numero = rand(1,20);
+  $numeros++;
+  
+  if( $numero % 2 === 0 ) $sumaPares+=$numero;
+
+  echo "El número generado es $numero y los pares totalizan $sumaPares<br>";
+
+  if( $sumaPares > 100 ) break;
+ 
+}
+echo "La suma de pares es $sumaPares y se han generado $numeros</p>";
+
+// Break admite un argumento numérico entero que indica
+// de qué bucle se sale (cuando hay bucles anidados)
+
+// Generar 200 números aleatorios entre 1y 1000
+// Por cada uno se comprueba cuantos números primos
+// hay desde 1 hasta ese número. 
+// Si hay más de 10 números primos que termine.
+// Visualizar cada número generado y cuantos  primos 
+// hasta ese número 
+echo "<p>";
+for( $i = 0; $i < 200; $i++ ) {
+  $numero = rand(1,1000);
+  $primos = 0;
+
+  echo "Se ha generado el numero $numero<br>";
+                    // 124
+  for( $j = 1; $j <= $numero; $j++ ) {
+    // Un número es primo si no tiene divisores
+    // menores que su raíz cuadrada
+    // Ej. 124 -> Raiz 11 ->
+
+    // 11
+    
+    $raiz = intval($j ** 0.5); // sqrt($j);
+    while ( $raiz > 1 ) {
+          // 124  % 11  === 0 
+      //echo "\$j es $j y \$raiz es $raiz<br>";
+      if( $j % $raiz === 0 ) break;
+
+      $raiz--;
+    }
+
+    // Si llego aquí, no ha encontrado ningún
+    // número inferior a su raiz que sea divisible
+    // es primo.
+    if( $raiz === 1 ) {
+      $primos++;
+      echo "El número $j es primo<br>";
+      echo "Encontrados $primos números primos<br>";
+    }
+    // si $j es primo se cuenta ++$primos;
+
+    if( $primos > 10 ) break 2;
+    // si $primos > 10 se acaba -> break;
+  }
+}
+echo "</p>";
+?>
 </body>
 </html>
