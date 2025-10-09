@@ -487,6 +487,49 @@ for( $i = 0; $i < 200; $i++ ) {
   }
 }
 echo "</p>";
+
+// Bucle para contar cuantos números
+// impares entre 1 y 100 se generan aleatoramiente
+// hasta que se genere el 0, pero que no sean múltiplo de 3
+$numero = rand(0,100);
+$impares = 0;
+$multiplos_3 = 0;
+echo "<p>";
+while( $numero ) {
+  echo "El número generado es $numero<br>";
+  if( $numero % 3 == 0 ) {
+    $numero = rand(0,100);
+    $multiplos_3++;
+    continue;
+  }
+
+  if( $numero % 2 ) $impares++;
+
+  $numero = rand(0,100);
+}
+echo "Se han generado $numeros impares no múltiplos de 3</p>";
+echo "Se han generado $multiplos_3 números múltiplos de 3<br>";
+?>
+<h3>Sintaxis alternativa a las estructuras de control</h3>
+<?php
+$numero = rand(1,100);
+if( $numero % 2 == 0 ):
+echo "<p>El número $numero es par</p>";
+else:
+echo "<p>El número $numero es impar</p>";
+endif;
+
+echo "<p>";
+for( $i = 0; $i <= 10; $i++ ):
+  echo "$i * $numero = " . $i * $numero . "<br>";
+endfor;
+
+$i = 10;
+while( $i >= 1 ):
+  echo "El valor de i es $i<br>";
+  $i--;
+endwhile;
+echo "</p>";
 ?>
 </body>
 </html>
