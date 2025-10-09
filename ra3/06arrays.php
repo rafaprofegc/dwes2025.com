@@ -172,7 +172,132 @@ $modulo = "dwes";
 $trimestre = "t3";
 
 echo "La nota de $alumno en el módulo $modulo y el trimestre $trimestre: {$notas[$alumno][$trimestre][$modulo]}<br>";
+?>
+<h3>Recorrido de un array</h3>
+<?php
+// Con un bucle tradicional
+// Solo con arrays escalares
+$numeros = [6, 19, 12, 7, 11, 9, 3];
+echo "<p>";
 
+for($i=0; $i < count($numeros); $i++) {
+  echo "Elemento $i es {$numeros[$i]}<br>";
+}
+echo "</p>";
+/*
+$i = 0;
+while( $i < count($numeros) ) {
+  echo "Elemento {$numeros[$i]}<br>";
+  $i++;
+}
+*/
+
+// Para cualquier tipo de array (escalar o asociativo)
+// Bucle foreach
+/* Sintaxis:
+    foreach( $array as [$clave =>] $valor ) {
+      sentencias
+    }
+*/
+echo "<p>Array números con foreach:<br>";
+foreach( $numeros as $numero ) {
+  echo "Elemento es $numero<br>";
+}
+echo "</p>";
+
+// Con Arrays mixto
+$alumno = [];   // $alumno = Array();
+$alumno['nombre'] = "Juan";
+$alumno['apellidos'] = 'Gómez González';
+$alumno[0] = 4;
+$alumno[1] = 6;
+$alumno[2] = 7;
+$alumno['media'] = 6;
+echo "<p>";
+foreach($alumno as $clave => $valor) {
+  echo "Elemento con clave $clave y valor $valor<br>";
+}
+echo "</p>";
+
+// Array asociativo
+$componentes['cpu'] = "i7 Ultra 13th";
+$componentes['mt'] = "Asus H81M2";
+$componentes['ram'] = "Kingstone DDR4 3200Mhz 16GB";
+$componentes['sdd'] = "Samsung EVO 950 1 TB Nvme m.2";
+$componentes['caja'] = "Caja con fuente 700w";
+$componentes['monitor'] = "Monitor UHD 4K 23\"";
+$componentes['teclado'] = "Teclado 105 inalámbrico retroiluminado";
+$componentes['raton'] = "Ratón 3 botones inalámbrico";
+
+echo "<p>Los componentes de mi PC:<br>";
+foreach($componentes as $componente) {
+  echo "Un componente: $componente<br>";
+}
+echo "</p>";
+
+echo "<p>Los componentes y sus tipos de mi PC:<br>";
+foreach($componentes as $tipo => $componente) {
+  echo "Componente: $tipo -> $componente<br>";
+}
+echo "</p>";
+
+// Arrays multidimensionales
+
+$misNotas = Array(
+  Array(3.5, 6, 8, 9.5, 3), 
+  Array(2, 5.5, 6, 2, 10), 
+  Array(4.5, 3, 2.5, 7, 8), 
+  Array(7, 1, 0, 1.5, 3.5)
+);
+
+// Con for tradicional anidado
+for( $i = 0; $i < count($misNotas); $i++ ) {
+  echo "Fila: $i: ";
+  for($j = 0; $j < count($misNotas[$i]); $j++) {
+    echo " - {$misNotas[$i][$j]}";
+  }
+  echo "<br>";
+}
+echo "</p>";
+
+// Con arrays mixtos o asociativos, foreach anidados.
+echo "<p>";
+foreach($coches as $matricula => $coche ) {
+  echo "Vehículo: $matricula<br>";
+  foreach( $coche as $caracteristica => $valor ) {
+    echo "$caracteristica: $valor<br>";
+  }
+}
+echo "</p>";
+echo "<p>";
+
+foreach( $notas as $alumno => $notas_trimestres ) {
+  echo "Alumno: $alumno<br>";
+  foreach( $notas_trimestres as $trimestre => $notas_modulos) {
+    echo "Trimestre: $trimestre<br>";
+    foreach( $notas_modulos as $modulo => $nota) {
+      echo "$modulo: $nota - ";
+    }
+    echo "<br>";
+  }
+  echo "------------------<br>";
+}
+?>
+<h3>Funciones de arrays</h3>
+<?php
+echo "<p>";
+if( array_key_exists("1234ABC", $coches) ) {
+  echo "Existe el coche con mátricula 1234ABC y es:";
+  $coche = $coches['1234ABC'];
+  foreach( $coche as $caracteristica => $valor ) {
+    echo "$caracteristica: $valor";
+  }
+}
+else {
+  echo "Error. El coche con mátricula 1234ABC no existe";
+}
+
+echo "</p>";
 ?>
 </body>
 </html>
