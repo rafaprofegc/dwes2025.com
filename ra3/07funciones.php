@@ -210,5 +210,84 @@ volumenCilindro2(5);
       <li>array</li> 
     </ul>
     Cada tipo puede ir precedido por ? indicando que se espera un argumento de ese tipo o null</p>
+<?php
+
+
+function areaRectangulo(float $base, float $altura): ?float {
+  if( $base < 0 || $altura < 0 ) {
+    $area = null;
+  }
+  else {
+    $area = $base *$altura;
+  }
+  return $area;
+}
+
+
+echo "<p>Área del rectángulo con base 8 y altura 5: ";
+$area = areaRectangulo(8, 5);
+echo "$area</p>";
+
+echo "<p>Área del recángulo con base \"9\" y altura 4:";
+$area = areaRectangulo("9.3", 4);
+echo "$area</p>";
+
+/*
+echo "<p>El segundo parámetro no se puede convertir: ";
+$area = area_rectangulo(5, "ab45");
+echo "$area</p>";
+*/
+
+echo "<p>Área del rectángulo con base negativa: ";
+$area = areaRectangulo(-5, 8);
+echo $area ? $area : " El valor ha sido nulo";
+echo "</p>";
+?>
+<h3>Parámetros con nombre (en la llamada)</h3>
+<p>Consiste en utilizar el nombre de un parámetro en la invocación de la función. Esto supone:
+  <ul>
+    <li>El valor del argumento se pasa mediante una expresión en la que se pone el nombre del 
+      parámetro sin $ y su valor después del operador :, es decir, par : expr</li>
+    <li>No es necesario respetar el orden de definición de los parámetros en la invocación</li>
+  </ul>
+</p>
+<?php
+$volumen = volumenCilindro( $radio = 8, $altura = 5);
+echo "<p>El volumen del cilindro con radio 8 y altura 5 es $volumen</p>";
+
+$volumen = volumenCilindro( altura : 5, radio : 9);
+echo "<p>El volumen del cilindro con radio 9 y altura 5 es $volumen</p>";
+?>
+<h3>Valor de devolución</h3>
+<p>Con la sentencia return, en cualquier lugar de la función, se devuelve un valor al punto 
+  de invocación. Cualquier sentencia debajo de return, no se ejecuta.</p>
+
+<p>Podemos devolver más de un valor. Para ello tenemos que primero devolver en la función 
+  un array con todos los valores que queremos devolver. En el punto de invocación podemos
+  recoger el array con una función list()</p>
+
+<?php
+function areaLongitud(float $radio): array {
+  $resultado[] = $radio ** 2 * PI;
+  $resultado[] = $radio * 2 * PI;
+
+  return $resultado;
+}
+
+list($areaCirculo, $longitudCircunferencia) = areaLongitud(5);
+echo "<p>El área del círculo con radio 5 es $areaCirculo y su circunferencia es $longitudCircunferencia</p>";
+
+$areaYLongitud = areaLongitud(8);
+echo "<p>El área del círculo con radio 8 es {$areaYLongitud[0]} y su circunferencia es {$areaYLongitud[1]}</p>";
+?>
+<h2>Ámbito y visibilidad</h2>
+<p>
+Ámbito es la parte del programa donde una variable existe. <br>
+Visibilidad es la parte del programa donde una variable existe y es accesible<br>
+<ul>
+  <li>En una función  las variables definidas en el script no son accesibles, salvo si las 
+    defino en la función como globales o accedo a ellas con el array superglobal $GLOBALS</li>
+</ul>
+
 </body>
 </html>
