@@ -258,6 +258,31 @@ echo "<p>El volumen del cilindro con radio 8 y altura 5 es $volumen</p>";
 $volumen = volumenCilindro( altura : 5, radio : 9);
 echo "<p>El volumen del cilindro con radio 9 y altura 5 es $volumen</p>";
 ?>
+<h3>Número indeterminado de parámetros</h3>
+<p>Podemos definir una función que recibe un número indeterminado de parámetros. Para ello 
+  tenemos que usar el operador de expasión, propagación, ... En la definición de la función 
+declaro un parámetro con el operador ... y dentro de la función se emplea como un array 
+escalar. En la invocación se pasan los argumentos que se quieran separados por coma. </p>
+<?php
+// Función que calcula y devuelve la media aritmética de un conjunto de
+// números.
+function mediaAritmetica(...$numeros) {
+  $total = 0;
+  foreach ($numeros as $numero) {
+    $total += $numero;
+  }
+
+  $media = $total / count($numeros);
+  return $media;
+}
+
+$n1 = 8;
+$n2 = 3;
+$n3 = 5;
+$media = mediaAritmetica($n1, 4, $n2, 9, $n3, 15);
+echo "<p>La media aritmética es $media</p>";
+?>
+
 <h3>Valor de devolución</h3>
 <p>Con la sentencia return, en cualquier lugar de la función, se devuelve un valor al punto 
   de invocación. Cualquier sentencia debajo de return, no se ejecuta.</p>
@@ -287,7 +312,184 @@ Visibilidad es la parte del programa donde una variable existe y es accesible<br
 <ul>
   <li>En una función  las variables definidas en el script no son accesibles, salvo si las 
     defino en la función como globales o accedo a ellas con el array superglobal $GLOBALS</li>
+  <li>Si modificamos una variable global en una función, su valor persiste.</li>
+  <li>Las variables estáticas se definen en una función y solo son visibles dentro de la 
+    función, pero conservan su valor entre llamadas a la función</li>
+  <li>Los parámetros de la función son variables locales, iguales a las variables que se 
+    definen dentro de la función. Solo son visibles y accesibles dentro de la función.
+  </li>
 </ul>
+<?php
+$a = 9;
+$b = 5;
 
+// Ejemplo de variables globales
+function suma() {
+  //global $a, $b;
+
+  //$suma = $a + $b;
+  $suma = $GLOBALS['a'] + $GLOBALS['b'];
+
+  return $suma;
+}
+
+$suma = suma();
+echo "<p>La suma de $a + $b es $suma</p>";
+
+// Ejemplo de variable estática
+function contadorEjecuciones() {
+  static $contador = 1;
+
+  echo "<p>Esta función se ha ejecutado $contador veces</p>";
+
+  $contador++;
+}
+
+// 1ª Ejecución. La variable contador se inicializa
+contadorEjecuciones();
+
+// 2ª Ejecución. La variable contador mantiene el valor que
+// tenía cuando terminó la anterior ejecución: 2
+contadorEjecuciones();
+
+// 3ª Ejecución. La variable contador mantiene el valor
+// que tenía cuando terminó la anterior ejecución: 3
+contadorEjecuciones();
+?>
+<h2>Recursividad</h2>
+<p>Cuando una función se invoca a si misma. OBLIGATORIO QUE LA INVOCACIÓN SE PRODUZCA
+  DENTRO DE UNA ESTRUCTURA DE CONTROL, GENERALMENTE IF. Si se invoca una función a si 
+  misma como una sentencia simple, se provoca el desborde de la pila, terminando 
+  el programa de forma abrupta.</p>
+
+<?php
+// Factorial de un número
+/*
+  n! = n * (n-1)!;
+  5! = 5 * 4!
+  5! = 5 * 4 * 3 * 2 * 1
+
+  1! = 1
+  2! = 2
+
+*/
+
+function factorial($n) {
+  if( gettype($n) != "integer") {
+    echo "<p>El valor de $n no es número entero</p>";
+    return;
+  }
+
+  if( $n > 1 ) {
+    return $n * factorial($n-1);
+  }
+  else {
+    return 1;
+  }
+}
+
+$factorial = factorial(5);
+echo "<p>El factorial de 5 es $factorial</p>";
+?>
+
+<h2>Funciones anónimas y funciones flecha</h2>
+<p>Función anónima es aquella que no tiene nombre. Se emplean para construir una 
+  expresión de función en la que la función se asigna a una variable. <br>
+<p>Función flecha es una forma reducida de expresar una función anónima cuando solo 
+  tiene una expresión como sentencia</p>
+<?php
+// Declarar una función anónima.
+// Con la palabra clave function y sin nombre pero con paréntesis y lista de parámetros.
+
+// Para argumentos de tipo callable
+
+$suma = function($a, $b) {
+  $suma = $a + $b;
+  return $suma;
+};
+
+$resultado = $suma(5, 8);
+echo "<p>El resultado de sumar 5 y 8 es $resultado</p>";
+
+echo "<p>El tipo de la variable \$suma es "  . gettype($suma) . "</p>";
+
+$nombre = function () {
+  return "Juan";
+};
+
+function saludar($nombre) {
+  echo "<p>¡Hola, $nombre! Me alegro de verte";
+}
+
+saludar($nombre());
+
+$n1 = 8;
+$n2 = 6;
+$resta = function() use($n1, $n2) {
+  echo "<p>La resta de $n1 y $n2 es " . ($n1 - $n2) . "</p>";
+};
+
+$resta();
+
+// Función flecha
+// Tipo especial de función anónima
+// Sintaxis: fn(<parametros>) => <expresión>;
+
+
+$doble = fn($numero) => $numero * 2;
+
+$doble3 = $doble(3);
+echo "<p>El doble de 3 es $doble3</p>";
+
+// A diferencia de la función anónima, la función flecha siempre devuelve un valor y además
+// será el de la expresión que contiene. 
+// NO hay que usar use() para utilizar las variables definidas en el script.
+
+$numero = 8;
+$multiplo = fn($n) => $n * $numero;
+$multiplo6 = $multiplo(6);
+echo "<p>El múltiplo de 6 por $numero es $multiplo6</p>";
+
+// El uso principal de las funciones fleca es como argumento callable en otras funciones.
+// Ejemplo: función array_map()
+$numeros = [ 3, 4, 5, 6, 7, 8];
+$cuadrados = array_map( fn($x) => $x * $x , $numeros);
+echo "<p>";
+foreach( $cuadrados as $c ) {
+  echo "$c ";
+}
+echo "</p>";
+
+/* Lo anterior equivale a esto
+$cuadrados = [];
+foreach($numeros as $n) {
+  $cuadrados[] = $n * $n;
+}
+*/
+
+// Otro ejemplo: función array_filter()
+$numeros = [ 3, 4, 5, 6, 7, 8];
+$mayores5 = array_filter($numeros, fn($x) => $x > 5);
+echo "<p>";
+foreach($mayores5 as $m5) {
+  echo "$m5 ";
+}
+echo "</p>";
+
+// Otro ejemplo con una función anónima
+$numeros = [ 9, -3, 5, 6, -1, -8];
+$positivos = array_filter($numeros, function($n) {
+  if( $n > 0 ) return true;
+  else return false;
+
+  //return $n > 0;
+});
+
+echo "<p>";
+foreach($positivos as $p) {
+  echo "$p ";
+}
+echo "</p>";
+?>
 </body>
 </html>
