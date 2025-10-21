@@ -67,10 +67,66 @@ inicioHtml("Formulario", ["/estilos/general.css", "/estilos/formulario.css"]);
 
     <label for="linkedin">Likedin</label>
     <input type="url" name="linkedin" id="linkedin" size="50"> 
+  </fieldset>
+
+  <fieldset>
+    <legend>Detalles del trabajo</legend>
+    <label for="fecha_disponible">Fecha disponibilidad</label>
+    <input type="date" name="fecha_disponibilidad" id="fecha_disponibilidad">
+
+    <label for="hora_entrevista">Hora</label>
+    <input type="time" name="hora_entrevista" id="hora_entrevista">
+
+    <label for="salario">Salario</label>
+    <input type="number" name="salario" id="salario" min="1000">
+  </fieldset>
+
+  <fieldset>
+    <legend>Preferencias del puesto</legend>
+    <label for="areas">Áreas de trabajo preferidas</label>
+    <div>
+      <input type="checkbox" name="areas[]" id="area1" value="ds">Desarrollo Web<br>
+      <input type="checkbox" name="areas[]" id="area2" value="dg">Diseño gráfico<br>
+      <input type="checkbox" name="areas[]" id="area3" value="mk">Marketing<br>
+      <input type="checkbox" name="areas[]" id="area4" value="rh">Recursos humanos
+    </div>
+
+    <label for="modalidad">Modalidad</label>
+    <div>
+      <input type="radio" name="modalidad" id="modalidad1" value="Presencial">Presencial<br>
+      <input type="radio" name="modalidad" id="modalidad2" value="Teletrabajo">Teletrabajo<br>
+      <input type="radio" name="modalidad" id="modalidad3" value="Mixto">Mixto
+    </div>
+
+    <label for="tipo_contrato">Tipo de contrato</label>
+    <select name="tipo_contrato" id="tipo_contrato">
+      <option value="">Elija un tipo de contrato</option>
+      <option value="tc">Tiempo completo</option>
+      <option value="mj">Media jornada</option>
+      <option value="fr">Freelance</option>
+    </select>
+
+    <label for="habilidades">Habilidades</label>
+    <select name="habilidades[]" multiple size="5" id="habilidades">
+      <option value="js">JavaScript</option>
+      <option value="py">Python</option>
+      <option value="uxui">Diseño UX/UI</option>
+      <option value="seo">SEO/SEM</option>
+      <option value="gp">Gestión de proyectos</option>
+    </select>
+
+    <label for="comentarios">Comentarios</label>
+    <textarea name="comentarios" rows="4" 
+      cols="40" id="comentarios" placeholder="Cuéntame más de ti"></textarea>
+
 
   </fieldset>
 
-  <input type="submit" name="operacion" value="Enviar">
+  <div>
+    <input type="submit" name="operacion" value="Enviar">
+    <input type="reset" value="Empezar otra vez">
+  </div>
+  
 
 </form>
 
