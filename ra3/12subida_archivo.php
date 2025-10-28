@@ -23,6 +23,12 @@ function gestionaArchivo(string $nombre, array $tiposPermitidos): int {
   }
 
   if( $_FILES[$nombre]['error'] === UPLOAD_ERR_OK ) {
+
+    // Compruebo el límite del archivo
+    $limite = $_POST["max_file_$nombre"];
+    if( $_FILES[$nombre]['size'] > $limite ) {
+      return 8;
+    }
     // Ha llegado el archivo y comprobamos el tipo MIME
     $tipoMIMESubido = $_FILES[$nombre]['type'];
     $tipoMIMEFuncion = mime_content_type($_FILES[$nombre]['tmp_name']);
@@ -200,6 +206,10 @@ if( $_SERVER['REQUEST_METHOD'] === "POST" ) {
           echo "<h3>Error en la subida de archivo: No se ha guardado el archivo</h3>";
           break;
         }
+        case 8: {
+          echo "<h3>Error en la subida de archivo. Se sobrepasado el límite de usuario</h3>";
+          break;
+        }
       }
       echo "<p>Regresar al <a href='{$_SERVER['PHP_SELF']}'>formulario de subida</a></p>";
       finHtml();
@@ -215,6 +225,9 @@ if( $_SERVER['REQUEST_METHOD'] === "POST" ) {
 <form method="POST" enctype="multipart/form-data" action="<?=$_SERVER['PHP_SELF']?>">
   <!-- Límite blando de PHP. 1 MB -->
   <!-- <input type="hidden" name="MAX_FILE_SIZE" id="MAX_FILE_SIZE" value="<?=1024*1024?>"> -->
+
+  <input type="hidden" name="max_file_pdf" id="max_file_archivo_cv" value=<?=500*1024?>>
+  <input type="hidden" name="max_file_png" id="max_file_archivo_png" value=<?=750*1024?>>
   <fieldset>
     <label for="dni">DNI</label>
     <input type="text" name="dni" id="dni" size="10">
