@@ -48,7 +48,7 @@ echo "<header>Suscripción al portal de salud</header>";
 
 if( $_SERVER['REQUEST_METHOD'] == "POST") {
 
-    // 1ª Forma: función htmlspecialchars()
+    // Saneamiento 1ª Forma: función htmlspecialchars()
     $datos['dni'] = htmlspecialchars($_POST['dni']);
     $datos['nombre'] = htmlspecialchars($_POST['nombre']);
     $datos['email'] = htmlspecialchars($_POST['email']);
@@ -62,7 +62,7 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
 
     presentarDatos($datos, "htmlspecialchars()");
 
-    // 2ª Forma: función filter_input()
+    // Saneamiento 2ª Forma: función filter_input()
     $datos['dni'] = filter_input(INPUT_POST, 'dni', FILTER_SANITIZE_SPECIAL_CHARS);
     $datos['nombre'] = filter_input(INPUT_POST, 'nombre', FILTER_SANITIZE_SPECIAL_CHARS);
     $datos['email'] = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
@@ -94,9 +94,55 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
     $datos['operacion'] = filter_input(INPUT_POST, 'operacion', FILTER_SANITIZE_SPECIAL_CHARS);
 
   presentarDatos($datos, "filter_input()");
-  
-    // 3ª Forma: función filter_input_array()
+
+    // Saneamiento 3ª Forma: función filter_input_array()
     echo "<p><a href='{$_SERVER['PHP_SELF']}'>Introducir los datos</a> de nuevo</p>";
+    $opcionesFiltrado = [
+      'dni'         => FILTER_SANITIZE_SPECIAL_CHARS,
+      'nombre'      => FILTER_SANITIZE_SPECIAL_CHARS,
+      'email'       => FILTER_SANITIZE_EMAIL,
+      'clave'       => FILTER_DEFAULT,
+      'suscripcion' => FILTER_SANITIZE_SPECIAL_CHARS,
+      'sitio'       => FILTER_SANITIZE_URL,
+      'peso'        => ['filter' => FILTER_SANITIZE_NUMBER_FLOAT,
+                        'flags'  => FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_SCIENTIFIC],
+      'edad'        => FILTER_SANITIZE_NUMBER_INT,
+      'patologias'  => ['filter' => FILTER_SANITIZE_SPECIAL_CHARS,
+                        'flags'  => FILTER_REQUIRE_ARRAY],
+      'comentarios' => FILTER_SANITIZE_SPECIAL_CHARS
+    ];
+
+    $datos = filter_input_array(INPUT_POST, $opcionesFiltrado);
+
+    presentarDatos($datos, "filter_input_array()");
+
+    // Validación 1ª Forma: función filter_input(), filter_var()
+    /*
+    Los datos que no tienen formato o tienen un formato del cual no disponemos
+    de filtro, solo se sanean. 
+    El DNI tiene formato, pero no tiene un filtro. Se sanea y después se valida
+    con lógica de negocio 
+    */
+    $datos['dni'] = filter_input(INPUT_POST, 'dni', FILTER_SANITIZE_SPECIAL_CHARS);
+    $datos['nombre'] = filter_input(INPUT_POST, 'nombre', FILTER_SANITIZE_SPECIAL_CHARS);
+    $datos['email'] = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+    $datos['clave'] = $_POST['clave'];
+    // $datos['suscripcion'] = isset($_POST['suscripcion']);
+    $datos['suscripcion'] = filter_input(INPUT_POST, 'suscripcion', FILTER_VALIDATE_BOOLEAN );
+    $datos['sitio'] = filter_input(INPUT_POST, 'sitio', FILTER_VALIDATE_URL);
+    $datos['peso'] = filter_input(INPUT_POST, 'peso', 
+      FILTER_VALIDATE_FLOAT, ['flags' => FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_SCIENTIFIC,
+                            'options' => ['min_range' => 40.0, 'max_range' => 300.0]]);
+    $datos['edad'] = filter_input(INPUT_POST, 'edad', 
+      FILTER_VALIDATE_INT, ['options' => ['min_range' => 18, 'max_range' => 65, 'default' => 18]]);
+    $datos['patologias'] = filter_input(INPUT_POST, 'patologias', 
+      FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
+    $datos['comentarios'] = filter_input(INPUT_POST, 'comentarios', FILTER_SANITIZE_SPECIAL_CHARS);
+
+    presentarDatos($datos, "filter_input() (validación)");
+
+
+
 
 }
 
@@ -117,7 +163,7 @@ if( $_SERVER['REQUEST_METHOD'] == "GET") { ?>
       <input type="password" name="clave" id="clave" size="10">
 
       <label for="suscripcion">Suscripción</label>
-      <input type="checkbox" name="suscripcion" id="suscripcion" value="Si">
+      <input type="checkbox" name="suscripcion" id="suscripcion" value="true">
 
       <label for="sitio">Sitio web personal</label>
       <input type="text" name="sitio" id="sitio" size="50">
