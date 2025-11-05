@@ -44,6 +44,17 @@ $patologias = [ 'os' => "Osteoporosis",
                 'ar' => "Arterioesclerosis" 
               ];
 
+
+$mensajesError = [
+  'dni'     => "El DNI tiene que ser 7 u 8 dígios y una letra mayúscula",
+  'nombre'  => "El nombre de usuario con lóngitud mínima de 8 caracteres y símbolos alfanuméricos",
+  'clave'   => "Una letra minúscula, otra mayúscula, un número, un símbolo y entre 6 y 9 caracteres",
+  'email'   => "El email no tiene el formato adecuado",
+  'peso'    => "El peso entre 40.0 y 250.0 Kg",
+  'edad'    => "La edad entre 18 y 65",
+  'patologias' => "Solo pueden ser Osteoporosis, Diabetes, Colesterol, Anemia o Arteriosclerosis"
+];
+
 echo "<header>Suscripción al portal de salud</header>";
 
 if( $_SERVER['REQUEST_METHOD'] == "POST") {
@@ -141,9 +152,70 @@ if( $_SERVER['REQUEST_METHOD'] == "POST") {
 
     presentarDatos($datos, "filter_input() (validación)");
 
+    $filtrosValidacion = [
+      'dni' => FILTER_SANITIZE_SPECIAL_CHARS,
+      'nombre' => FILTER_SANITIZE_SPECIAL_CHARS,
+      'email' => FILTER_VALIDATE_EMAIL,
+      'clave' => FILTER_DEFAULT,
+      'suscripcion' => FILTER_VALIDATE_BOOL,
+      'sitio' => FILTER_VALIDATE_URL,
+      'peso'  => ['filter' => FILTER_VALIDATE_FLOAT, 'flags' => FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_SCIENTIFIC,
+                  'options' => ['min_range' => 40.0, 'max_range' => 250.0]],
+      'edad' => ['filter' => FILTER_VALIDATE_INT, 'options' => ['min_range' => 18, 'max_range' => 65]],
+      'patologias' => ['filter' => FILTER_SANITIZE_SPECIAL_CHARS, 'flags' => FILTER_REQUIRE_ARRAY],
+      'comentarios' => FILTER_SANITIZE_SPECIAL_CHARS
+    ];
 
+    $datos = filter_input_array(INPUT_POST, $filtrosValidacion);
 
+    presentarDatos($datos, "filter_input_array()");
 
+    // 4ª Forma: Validación con lógica de negocio
+    $datos['dni'] = preg_match("/^[0-9]{7,8}[A-Z]$/", $datos['dni']) ? $datos['dni'] : false;
+    
+    // Suponemos que el nombre es un nombre de usuario con los siguientes requisitos
+    // - Esta formado por letras y números
+    // - longitud mínima
+    $datos['nombre'] = ctype_alnum($datos['nombre']) && strlen($datos['nombre']) > 8 ? $datos['nombre'] : false;
+
+    // Complejidad de la contraseña
+    // - Longitud: 6 caracteres mínimo y 9 máximo
+    // - Incluye 1 letra minúscula
+    // - Incluye 1 letra mayúscula
+    // - Incluye 1 dígito numérico
+    // - Incluye 1 símbolo !@#$%&/()=
+
+    $clave[] = preg_match("/[a-z]/", $datos['clave']);        // Si: 1, No: 0
+    $clave[] = preg_match("/[A-Z]/", $datos['clave']);        // Si: 1, No: 0
+    $clave[] = preg_match("/[0-9]/", $datos['clave']);        // Si: 1, No: 0
+    $clave[] = preg_match("/[!@#$%&\/()=]/", $datos['clave']);  // Si: 1, No: 0
+    $clave[] = strlen($datos['clave']) >= 6 && strlen($datos['clave']) <= 9;  // Si: True, No: False
+
+    $datos['clave'] = count(array_filter($clave)) == count($clave) ? $datos['clave'] : false;
+
+    // Si quitamos las claves no válidas de patologias y dejamos las buenas
+    $datos['patologias'] = array_filter($datos['patologias'], fn($x) => array_key_exists($x, $patologias));
+
+    // Si alguna clave no es buena, no se admite nada
+    $patologiasForm = array_filter($datos['patologias'], fn($x) => array_key_exists($x, $patologias));
+    $datos['patologias'] = count($datos['patologias']) == count($patologiasForm) ? 
+      $datos['patologias'] : false;
+
+    // Los datos obligatorios tienen que estar
+    $obligatorios = ["dni", "nombre", "clave", "email", "peso", "edad", "patologias"];
+    $datosPresentes = array_filter($datos);
+    $datosFaltan = array_diff($obligatorios, array_keys($datosPresentes));
+
+    if( count($datosFaltan) > 0 ) {
+      echo "<h3>Errores encontrados</h3>";
+      echo "<p>";
+      array_walk($datosFaltan, fn($x) => print("$mensajesError[$x]" . "<br>") );
+      echo "</p>";
+    }
+    else {
+      echo "<h3>Los datos son correctos</h3>";
+      presentarDatos($datos, "Lógica de negocio");
+    }
 }
 
 if( $_SERVER['REQUEST_METHOD'] == "GET") { ?>
@@ -151,7 +223,10 @@ if( $_SERVER['REQUEST_METHOD'] == "GET") { ?>
     <fieldset>
       <legend>Introducir los datos</legend>
       <label for="dni">Dni</label>
+      <div>
       <input type="text" name="dni" id="dni" size="10"> <!-- pattern="[0-9]{7,8}[A-Z]" -->
+      <span class="error"><?=isset($datosFaltan['dni']) ? $mensajesError['dni'] : ""?></span>
+      </div>
 
       <label for="nombre">Nombre completo</label>
       <input type="text" name="nombre" id="nombre" size="40">
