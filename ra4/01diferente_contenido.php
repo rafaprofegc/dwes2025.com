@@ -23,6 +23,18 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/include/funciones.php");
 // Si se envía una petición POST o una petición GET con el nombre de archivo -> Se descarga el archivo
 define("DIRECTORIO", $_SERVER['DOCUMENT_ROOT'] . "/archivos_ra4");
 
+function calcularTamaño(int $tamaño): string {
+  $unidades = ["bytes", "KB", "MB", "GB", "TB"];
+  $indice = 0;
+  while( $tamaño > 1024 ) {
+    $tamaño = intval($tamaño / 1024);
+    $indice++;
+  }
+
+  return "$tamaño {$unidades[$indice]}";
+
+}
+
 if( $_SERVER['REQUEST_METHOD'] === "GET" && !isset($_GET['archivo']) ) {
   // Presentamos la lista de archivos
   inicioHtml("Ejemplo de encabezados. Descarga de contenido de diferente tipo",
@@ -59,7 +71,8 @@ if( $_SERVER['REQUEST_METHOD'] === "GET" && !isset($_GET['archivo']) ) {
         echo "<td>$tipoMime</td>";
 
         $tamaño = filesize(DIRECTORIO . "/$archivo");
-        echo "<td>$tamaño</td>";
+        $tamañoVisto = calcularTamaño($tamaño);
+        echo "<td>$tamañoVisto</td>";
 
         // Botones para descargar y ver
         echo <<<BOTON1
@@ -98,8 +111,14 @@ if( $_SERVER['REQUEST_METHOD'] === "POST" ||
 
   if( file_exists(DIRECTORIO . "/$archivo") ) {
     $tipoMime = mime_content_type(DIRECTORIO. "/$archivo");
+    $tamaño = filesize(DIRECTORIO . "/$archivo");
 
     header("Content-type: $tipoMime");
+    header("Content-length: $tamaño");
+    if( isset($_POST['archivo']) ) {
+      header("Content-disposition: attachment; filename=$archivo");
+    }
+    
     readfile(DIRECTORIO . "/$archivo");
     exit(0);
   }
