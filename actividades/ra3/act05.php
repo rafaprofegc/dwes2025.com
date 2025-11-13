@@ -2,6 +2,7 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . "/include/funciones.php");
 
 define("TAMAÑO_MAXIMO", 200 * 1024);
+define("DESAYUNO_INCLUIDO", 20);
 
 function ErrorValidacion(array $datosSinValidar ): void {
   $mensajesValidacion = [
@@ -38,7 +39,198 @@ function ErrorArchivo(string $mensaje): void {
   exit();
 }
 
-inicioHtml("Actividad 05", ["/estilos/general.css", "/estilos/formulario.css"]);
+function SanearValidar(): array {
+  global $destinos, $hoteles, $extras, $compañias;
+
+// 1º Sanear y validar los datos
+  $filtros = [
+    'nombre'    => FILTER_SANITIZE_SPECIAL_CHARS,
+    'fecha'     => FILTER_SANITIZE_SPECIAL_CHARS,
+    'email'     => FILTER_VALIDATE_EMAIL,
+    'destino'   => FILTER_SANITIZE_SPECIAL_CHARS,
+    'compania'  => FILTER_SANITIZE_SPECIAL_CHARS,
+    'hotel'     => FILTER_SANITIZE_SPECIAL_CHARS,
+    'desayuno'  => FILTER_VALIDATE_BOOL,
+    'personas'  => ['filter' => FILTER_VALIDATE_INT, 
+                    'options' => ['min_range' => 5, 'max_range'=> 10]],
+    'dias'      => FILTER_VALIDATE_INT,
+    'extras'    => ['filter' => FILTER_SANITIZE_SPECIAL_CHARS, 'flags' => FILTER_REQUIRE_ARRAY]
+  ];
+
+  $datos = filter_input_array(INPUT_POST, $filtros);
+
+  // Validación por lógica de negocio
+  
+  // Fecha. Funciones strtotime() y date()
+  $fecha = strtotime($datos['fecha']);
+  $datos['fecha'] = $fecha && $fecha > time() ? date("l, d F  Y", $fecha) : false;
+
+  // Destino, compañía y hotel
+  $datos['destino'] = array_key_exists($datos['destino'], $destinos) ? $datos['destino'] : false;
+  $datos['compania'] = array_key_exists($datos['compania'], $compañias) ? $datos['compania'] : false;
+  $datos['hotel'] = array_key_exists($datos['hotel'], $hoteles) ? $datos['hotel'] : false;
+
+  // Dias
+  $diasPermitidos = [ 5, 10, 15 ];
+  $datos['dias'] = in_array($datos['dias'], $diasPermitidos) ? $datos['dias'] : false;
+
+  // Extras
+  $datos['extras'] = array_filter($datos['extras'], fn($extra) => array_key_exists($extra, $extras));
+
+  // Datos obligatorios
+  $datosObligatorios = [ "nombre", "fecha", "email", "destino", "compania", "hotel", "personas", "dias"];
+  $datosPresentes = array_filter($datos);
+  $noEstanPresentes = array_diff($datosObligatorios, array_keys($datosPresentes));
+  
+  if( $noEstanPresentes ) {
+    ErrorValidacion($noEstanPresentes);
+  }  
+  return $datos;
+}
+
+function GuardarDNI(int $fecha, string $email, string $nombre):void {
+  
+  if( $_FILES['dni']['error'] == UPLOAD_ERR_FORM_SIZE ) {
+    ErrorArchivo("El archivo supera el tamaño máximo de ". TAMAÑO_MAXIMO . " bytes" );
+  }
+
+  /*
+  Se guarda en el directorio /viajes/<grupo>, siendo <grupo> una
+  codificación formada con: <fecha>.<email>.
+
+  El nombre del archivo será el nombre de la persona responsable (sustituir
+  espacios en blanco por guiones bajos).
+  */
+
+  if( $_FILES['dni']['error'] == UPLOAD_ERR_OK ) {
+
+    // Comprobar tipo MIME
+    $tiposMimeValidos = [
+      'image/jpeg'  => 'jpg',
+      'image/png'   => 'png',
+      'image/webp'  => 'webp'
+    ];
+
+    $tipoMimeSubido = $_FILES['dni']['type'];
+    $tipoMimeFuncion = mime_content_type($_FILES['dni']['tmp_name']);
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $tipoMimeInfo = finfo_file($finfo, $_FILES['dni']['tmp_name']);
+
+    if( $tipoMimeSubido != $tipoMimeFuncion || $tipoMimeSubido != $tipoMimeInfo ||
+        !array_key_exists($tipoMimeSubido, $tiposMimeValidos) ) {
+      ErrorArchivo("El tipo mime no es válido");
+    }
+
+    $grupo = date("d-m-Y", $fecha) . ".$email";
+
+    if( !file_exists($_SERVER['DOCUMENT_ROOT'] . "/viajes/$grupo") ||
+        !is_dir($_SERVER['DOCUMENT_ROOT'] . "/viajes/$grupo") ) {
+      if( !mkdir($_SERVER['DOCUMENT_ROOT'] . "/viajes/$grupo", 0755, true) ) {
+        ErrorArchivo("No se ha podido crear el directorio /viajes/$grupo");
+      }     
+    }
+
+    // Guardo el archivo
+    $nombre = str_replace(" ", "_", $nombre) . "." . $tiposMimeValidos[$tipoMimeSubido];
+    $pathCompleto = $_SERVER['DOCUMENT_ROOT'] . "/viajes/$grupo/$nombre";
+    if( !move_uploaded_file($_FILES['dni']['tmp_name'], $pathCompleto) ) {
+      ErrorArchivo("El archivo no ha podido guardarse");
+    }
+  }
+}
+
+function PresentarPresupuesto(array $datos): void {
+
+  global $destinos, $compañias, $hoteles, $extras;
+  $fecha = strtotime($datos['fecha']);
+
+  echo "<h3>Cálculo del coste del viaje</h3>";
+  echo <<<TABLA
+    <table>
+      <thead>
+        <tr>
+          <th>Persona Responsable</th>
+          <th>Fecha del viaje</th>
+          <th>Destino</th>
+          <th>Compañía</th>
+          <th>Hotel</th>
+          <th>Con desayuno</th>
+          <th>Nº personas</th>
+          <th>Dias</th>
+          <th>Extras</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+    TABLA;
+    echo "<td>{$datos['nombre']}<br>{$datos['email']}</td>";
+    echo "<td>" . date("d/m/Y", $fecha) . "</td>";
+
+    echo "<td>{$destinos[$datos['destino']]['nombre']}</td>";
+    
+    $precioDestino = $datos['dias'] * $datos['personas'] * $destinos[$datos['destino']]['precio'];
+    $presupuesto = "Precio en destino: {$destinos[$datos['destino']]['nombre']}: $precioDestino €<br>";
+
+    echo "<td>{$compañias[$datos['compania']]['nombre']}</td>";
+    $precioVuelo = $datos['personas'] * $compañias[$datos['compania']]['precio'] * 2;
+    $presupuesto.= "Precio de los vuelos: $precioVuelo<br>";
+
+    echo "<td>{$hoteles[$datos['hotel']]['clasif']}</td>";
+    $precioHotel = $datos['personas'] * $hoteles[$datos['hotel']]['precio'] * $datos['dias'];
+    $presupuesto.= "Incremento por hotel de {$hoteles[$datos['hotel']]['clasif']}: $precioHotel €<br>";
+
+    echo "<td>" . ($datos['desayuno'] ? "Incluido" : "No se incluye") . "</td>";
+    $precioDesayuno = $datos['desayuno'] ? $datos['personas'] * $datos['dias'] * DESAYUNO_INCLUIDO : 0;
+    $presupuesto.= "Incremento por incluir desayuno: " . ($datos['desayuno'] ? "$precioDesayuno €" : "No está incluído") . "<br>";
+
+    echo "<td>{$datos['personas']}</td>";
+    echo "<td>{$datos['dias']}</td>";
+
+    echo "<td>";
+    $totalExtras = 0;
+    foreach($datos['extras'] as $extra) {
+      switch($extra) {
+        case 'vg' :{
+          $precioVisitaGuiada = $extras['vg']['precio'];
+          $totalExtras+=$precioVisitaGuiada;
+          echo "Visita Guiada<br>";
+          $presupuesto.= "Incremento por Visita Guiada: " . $extras['vg']['precio']. " €<br>";
+          break;
+        }
+        case 'bt': {
+          $precioBusTuristico = $datos['personas'] * $datos['dias'] * $extras['bt']['precio'];
+          $totalExtras+= $precioBusTuristico;
+          echo "Bus turístico<br>";
+          $presupuesto.= "Incremento por Bus turístico: $precioBusTuristico €<br>";
+          break;
+        }
+        case '2m': {
+          $precio2Maletas = $datos['personas'] * $extras['2m']['precio'];
+          $totalExtras+=$precio2Maletas;
+          echo "2ª maleta facturada<br>";
+          $presupuesto.= "Incremento por 2ª maleta facturada: $precio2Maletas €<br>";
+          break;
+        }
+        case 'sv': {
+          $precioSeguroViaje = $datos['personas'] * $datos['dias'] * $extras['sv']['precio'];
+          $totalExtras+= $precioSeguroViaje;
+          echo "Seguro de viaje<br>";
+          $presupuesto.= "Incremento por seguro de viaje: $precioSeguroViaje €<br>";
+          break;
+        }
+      }
+    }
+    echo "</td>";
+    echo "</tr>";
+    echo "</tbody>";
+    echo "</table>";
+
+    echo "<h3>Coste del viaje</h3>";
+    echo "<p>$presupuesto</p>";
+    echo "<h4>Precio total: " . ($precioDestino + $precioVuelo + $precioHotel + $precioDesayuno + $totalExtras). "</h4>";
+}
+
+inicioHtml("Actividad 05", ["/estilos/general.css", "/estilos/formulario.css", "/estilos/tabla.css"]);
 ob_start();
 
 $destinos = [
@@ -154,132 +346,15 @@ if( $_SERVER['REQUEST_METHOD'] === "GET" ) {
 
 if( $_SERVER['REQUEST_METHOD'] === "POST") {
 
-  // 1º Sanear y validar los datos
-  $filtros = [
-    'nombre'    => FILTER_SANITIZE_SPECIAL_CHARS,
-    'fecha'     => FILTER_SANITIZE_SPECIAL_CHARS,
-    'email'     => FILTER_VALIDATE_EMAIL,
-    'destino'   => FILTER_SANITIZE_SPECIAL_CHARS,
-    'compania'  => FILTER_SANITIZE_SPECIAL_CHARS,
-    'hotel'     => FILTER_SANITIZE_SPECIAL_CHARS,
-    'desayuno'  => FILTER_VALIDATE_BOOL,
-    'personas'  => ['filter' => FILTER_VALIDATE_INT, 
-                    'options' => ['min_range' => 5, 'max_range'=> 10]],
-    'dias'      => FILTER_VALIDATE_INT,
-    'extras'    => ['filter' => FILTER_SANITIZE_SPECIAL_CHARS, 'flags' => FILTER_REQUIRE_ARRAY]
-  ];
+  // 1º Sanear y validar el formulario
+  $datos = SanearValidar();
 
-  $datos = filter_input_array(INPUT_POST, $filtros);
-
-  // Validación por lógica de negocio
-  
-  // Fecha. Funciones strtotime() y date()
-  $fecha = strtotime($datos['fecha']);
-  $datos['fecha'] = $fecha && $fecha > time() ? date("l, d F  Y", $fecha) : false;
-
-  // Destino, compañía y hotel
-  $datos['destino'] = array_key_exists($datos['destino'], $destinos) ? $datos['destino'] : false;
-  $datos['compania'] = array_key_exists($datos['compania'], $compañias) ? $datos['compania'] : false;
-  $datos['hotel'] = array_key_exists($datos['hotel'], $hoteles) ? $datos['hotel'] : false;
-
-  // Dias
-  $diasPermitidos = [ 5, 10, 15 ];
-  $datos['dias'] = in_array($datos['dias'], $diasPermitidos) ? $datos['dias'] : false;
-
-  // Extras
-  $datos['extras'] = array_filter($datos['extras'], fn($extra) => array_key_exists($extra, $extras));
-
-  // Datos obligatorios
-  $datosObligatorios = [ "nombre", "fecha", "email", "destino", "compania", "hotel", "personas", "dias"];
-  $datosPresentes = array_filter($datos);
-  $noEstanPresentes = array_diff($datosObligatorios, array_keys($datosPresentes));
-  if( $noEstanPresentes ) {
-    ErrorValidacion($noEstanPresentes);
-  }  
-
-  // 2º Guardar el archivo subido
-  if( $_FILES['dni']['error'] == UPLOAD_ERR_FORM_SIZE ) {
-    Error("El archivo supera el tamaño máximo de ". TAMAÑO_MAXIMO . " bytes" );
-  }
-
-  /*
-  Se guarda en el directorio /viajes/<grupo>, siendo <grupo> una
-  codificación formada con: <fecha>.<email>.
-
-  El nombre del archivo será el nombre de la persona responsable (sustituir
-  espacios en blanco por guiones bajos).
-  */
-
-  if( $_FILES['dni']['error'] == UPLOAD_ERR_OK ) {
-
-    // Comprobar tipo MIME
-    $tiposMimeValidos = [
-      'image/jpeg'  => 'jpg',
-      'image/png'   => 'png',
-      'image/webp'  => 'webp'
-    ];
-
-    $tipoMimeSubido = $_FILES['dni']['type'];
-    $tipoMimeFuncion = mime_content_type($_FILES['dni']['tmp_name']);
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $tipoMimeInfo = finfo_file($finfo, $_FILES['dni']['tmp_name']);
-
-    if( $tipoMimeSubido != $tipoMimeFuncion || $tipoMimeSubido != $tipoMimeInfo ||
-        !in_array($tipoMimeSubido, $tiposMimeValidos) ) {
-      ErrorArchivo("El tipo mime no es válido");
-    }
-
-    $grupo = date("d-m-Y", $fecha) . ".$email";
-
-    if( !file_exists($_SERVER['DOCUMENT_ROOT'] . "/viajes/$grupo") ||
-        !is_dir($_SERVER['DOCUMENT_ROOT'] . "/viajes/$grupo") ) {
-      if( !mkdir($_SERVER['DOCUMENT_ROOT'] . "/viajes/$grupo", 0755, true) ) {
-        ErrorArchivo("No se ha podido crear el directorio /viajes/$grupo");
-      }     
-    }
-
-    // Guardo el archivo
-    $nombre = str_replace(" ", "_", $datos['nombre']) . $tiposMimeValidos[$tipoMimeSubido];
-    $pathCompleto = $_SERVER['DOCUMENT_ROOT'] . "/viajes/$grupo/$nombre";
-    if( !move_uploaded_file($_FILES['dni']['tmp_name'], $pathCompleto) ) {
-      ErrorArchivo("El archivo no ha podido guardarse");
-    }
-  }
+  // 2º Guardar el DNI de la persona responsable
+  GuardarDNI(strtotime($datos['fecha']), $datos['email'], $datos['nombre']);
 
   // 3º Calcular el presupuesto
-  echo "<h3>Cálculo del coste del viaje</h3>";
-  echo <<<TABLA
-    <table>
-      <thead>
-        <tr>
-          <th>Persona Responsable</th>
-          <th>Fecha del viaje</th>
-          <th>Destino</th>
-          <th>Compañía</th>
-          <th>Hotel</th>
-          <th>Con desayuno</th>
-          <th>Nº personas</th>
-          <th>Dias</th>
-          <th>Extras</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-    TABLA;
-    echo "<td>{$datos['nombre']}<br>{$datos['email']}</td>";
-    echo "<td>" . date("d/m/Y", $datos['fecha']) . "</td>";
+  PresentarPresupuesto($datos);
 
-    echo "<td>{$destinos[$datos['destino']]['nombre']}</td>";
-    
-    $precioDestino = $datos['dias'] * $datos['personas'] * $destinos[$datos['destino']]['precio'];
-    $presupuesto = "Precio en destino: {$destinos[$datos['destino']]['nombre']}: $precioDestino €<br>";
-
-    echo "<td>{$compania[$datos['compania']]['nombre']}</td>";
-    $precioVuelo = $datos['personas'] * $compania[$datos['compania']]['precio'] * 2;
-    $presupuesto.= "Precio de los vuelos: $precioVuelo<br>";
-
-  // Si hay error en la validación, se envían mensajes de error
-  // Si hay error en la subida de archivo, se envían mensajes de error
 }
 
 
