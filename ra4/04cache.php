@@ -50,6 +50,7 @@ Inconvenientes:
 $ahora = time();
 $masUnaHora = $ahora + 60 * 60;
 
+
 // Thu, 13 Oct 2025 15:30:00 GMT
 $formatoFecha = "D, j M Y H:i:s";
 $caducidad = gmdate($formatoFecha, $masUnaHora);
