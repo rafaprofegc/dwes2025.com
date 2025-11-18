@@ -61,6 +61,22 @@ $caducidad = gmdate($formatoFecha, $masUnaHora);
 // 2ª Opción. Encabezado Cache-control
 header("Cache-control: no-cache, max-age:3600, must-revalidate");
 
+// 3ª Opción. No queremos que la página se cachee
+header("Cache-control: no-store, no-cache, private, max-age:0, must-revalidate");
+
+// 4ª Opción. No tenemos Expires ni Cache-control
+// Se emplean los encabezados Date y Last-modified
+// Los navegadores asumen que si no hay Expires ni Cache-control
+// pero tienen Date y Last-modified entonces pueden mantener y servir la
+// página cacheada un 10% del tiempo desde la última modificación.
+// Si tenemos que Date - Last-modified = T, 0,1 * T. 
+// Ejemplo: 2 horas * 0,1 = 12 minutos a partir de Date
+
+$ahora = gmdate($formatoFecha, time());
+$ultimaModificacion = gmdate($formatoFecha, time() - 2 * 60 * 60);
+header("Date: $ahora");
+header("Last-modified: $ultimaModificacion");
+
 require_once($_SERVER['DOCUMENT_ROOT'] . "/include/funciones.php");
 inicioHtml("Gestión de caché", ["/estilos/general.css"]);
 echo "<header>Probando la caché del navegador</header>";
