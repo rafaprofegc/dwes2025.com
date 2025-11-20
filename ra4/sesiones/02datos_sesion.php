@@ -51,7 +51,7 @@ if( $_SERVER['REQUEST_METHOD'] === "POST" && $operacion === "Añadir a la cesta"
 
 // Presentar el formulario de productos de la cesta.
 comprobarSesion();
-inicioHtml("Sesiones en PHP", ["/estilos/general.css", "/estilos/formulario.css"]);
+inicioHtml("Sesiones en PHP", ["/estilos/general.css", "/estilos/formulario.css", "/estilos/tabla.css"]);
 verVariablesSesion();
 
 ?>
@@ -66,8 +66,9 @@ verVariablesSesion();
     <input type="number" name="cantidad" id="cantidad" size="5" required>
 
   </fieldset>
-  <input type="submit" name="operacion" id="operacion" value="Añadir a la cesta"
+  <input type="submit" name="operacion" id="operacion" value="Añadir a la cesta">
 </form>
+<p><a href="03sesion_cesta.php">Terminar la cesta</a></p>
 <?php
 
 ?>

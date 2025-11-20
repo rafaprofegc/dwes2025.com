@@ -30,7 +30,7 @@ function sanearValidar(int $INPUT, array $filtros, array $obligatorios): array {
   $datos = filter_input_array($INPUT, $filtros);
   $datos = array_filter($datos);
 
-  $noEstan = array_diff($obligatorios, $datos);
+  $noEstan = array_diff($obligatorios, array_keys($datos));
   if( $noEstan ) {
     return ['resultado' => false,
             'datos'     => $noEstan

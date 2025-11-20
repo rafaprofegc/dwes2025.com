@@ -27,30 +27,32 @@ function verVariablesSesion(): void {
   echo "<p>Nombre: {$_SESSION['nombre']}<br>";
   echo "Email: {$_SESSION['email']}<br>";
   $productos = $_SESSION['productos'];
-  echo <<<TABLA
-    <table>
-      <thead>
-        <tr>
-          <th>Dulce de Navidad</th>
-          <th>Cantidad</th>
-        </tr>
-      </thead>
-      <tbody>
-  TABLA;
+  if( $productos ) {
+    echo <<<TABLA
+      <table>
+        <thead>
+          <tr>
+            <th>Dulce de Navidad</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+    TABLA;
 
-  foreach($productos as $producto) {
-    echo "<tr><td>{$producto['dulce']}</td><td>{$producto['cantidad']}</td></tr>";
+    foreach($productos as $producto) {
+      echo "<tr><td>{$producto['dulce']}</td><td>{$producto['cantidad']}</td></tr>";
+    }
+
+    /*
+    array_walk($productos, function($producto) {
+      echo "<tr><td>{$producto['dulce']}</td><td>{$producto['cantidad']}</td></tr>";
+    });
+    */
+    echo <<<TABLA
+      </tbody>
+    </table>
+    <hr>
+    TABLA;
   }
-
-  /*
-  array_walk($productos, function($producto) {
-    echo "<tr><td>{$producto['dulce']}</td><td>{$producto['cantidad']}</td></tr>";
-  });
-  */
-  echo <<<TABLA
-    </tbody>
-  </table>
-  <hr>
-  TABLA;
 }
 ?>

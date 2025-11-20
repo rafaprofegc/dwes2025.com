@@ -66,6 +66,22 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/include/funciones.php");
 //require_once($_SERVER['DOCUMENT_ROOT'] . "/ra4/sesiones/05sesion_include.php");
 require_once("05sesion_include.php");
 
+$operacion = filter_input(INPUT_GET, 'operacion', FILTER_SANITIZE_SPECIAL_CHARS);
+
+if( $operacion === "cerrar" ) {
+  // Hay que cerrar la sesión
+  
+  // 1º Borrar la cookie con el id de sesión: PHPSESSID
+  $idSesion = session_name();
+  $parametrosCookie = session_get_cookie_params();
+  setCookie($idSesion, "", time() - 60, 
+  $parametrosCookie['path'], $parametrosCookie['domain'],
+  $parametrosCookie['secure'], $parametrosCookie['httponly'] );
+
+  unset($_SESSION);
+
+  session_start();
+}
 
 inicioHtml("Sesiones en PHP", ["/estilos/general.css", "/estilos/formulario.css"]);
 ob_start();
