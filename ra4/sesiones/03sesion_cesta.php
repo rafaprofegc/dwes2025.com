@@ -4,6 +4,7 @@ session_start();
 require_once($_SERVER['DOCUMENT_ROOT'] . "/include/funciones.php");
 require_once("05sesion_include.php");
 comprobarSesion();
+inicioHtml("Datos de la sesión", ["/estilos/general.css", "/estilos/tabla.css"]);
 verVariablesSesion();
 
 define("PRECIO_KG", 10);
@@ -19,4 +20,5 @@ echo <<<CERRAR_SESION
   </p>
 CERRAR_SESION;
 
+finHtml();
 ?>

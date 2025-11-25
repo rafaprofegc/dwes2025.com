@@ -72,12 +72,13 @@ if( $operacion === "cerrar" ) {
   // Hay que cerrar la sesión
   
   // 1º Borrar la cookie con el id de sesión: PHPSESSID
-  $idSesion = session_name();
+  $idSesion = session_name(); // PHPSESSID
   $parametrosCookie = session_get_cookie_params();
   setCookie($idSesion, "", time() - 60, 
   $parametrosCookie['path'], $parametrosCookie['domain'],
   $parametrosCookie['secure'], $parametrosCookie['httponly'] );
 
+  session_destroy();
   unset($_SESSION);
 
   session_start();
@@ -85,7 +86,6 @@ if( $operacion === "cerrar" ) {
 
 inicioHtml("Sesiones en PHP", ["/estilos/general.css", "/estilos/formulario.css"]);
 ob_start();
-
 echo "<header>Mi cesta de Navidad</header>";
 ?>
 <form action="02datos_sesion.php" method="POST">
