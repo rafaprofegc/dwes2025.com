@@ -16,3 +16,10 @@ header {
   text-align: center;
   font-size: 2em;
 }
+
+#cabecera {
+  text-align: right;
+  font-size: 1em;
+  border-bottom: 0.2em outset gray;
+  padding: 1em;
+}
