@@ -1,6 +1,21 @@
 <?php
 session_start();
 
+/*
+  Sesión de usuario:
+   - Solo para almacenar datos entre peticiones.
+   - Identificador PHPSESSID (cookie)
+   - Array global $_SESSION
+
+  Autenticación de usuario:
+   - Formulario con usuario/clave 
+   - Compruebo las credenciales en BD de usuarios
+   - Mantengo datos de la identidad del usuario para
+     las siguientes peticiones. 2 formas:
+      - Usar variables de $_SESSION
+      - Usar un JWT
+*/
+
 $usuarios = [
   'juan@loquesea.com' => ['nombre' => "Juan Gómez", 
                           'perfil' => "Admin",
@@ -68,9 +83,12 @@ if( $_SERVER['REQUEST_METHOD'] === "POST") {
   $resultado = autenticaUsuario($email, $clave);
   if( $resultado === True ) {
     // Si la autentificación tiene éxito: Redirección a 02bienvenida.php
-    $_SESSION['login'] = $email;
-    $_SESSION['nombre'] = $usuarios[$email]['nombre'];
-    $_SESSION['perfil'] = $usuarios[$email]['perfil'];
+
+    // Si estos datos están en el payload del JWT, no se necesitan
+    // como datos de sesión 
+    //$_SESSION['login'] = $email;
+    //$_SESSION['nombre'] = $usuarios[$email]['nombre'];
+    //$_SESSION['perfil'] = $usuarios[$email]['perfil'];
 
     // Generar el JWT (JSON Web Token)
     $payload = [ 
@@ -80,8 +98,12 @@ if( $_SERVER['REQUEST_METHOD'] === "POST") {
     ];
 
     $jwt = generarJWT($payload);
+    // El JWT se envía al cliente
+    // 1ª Forma: con un encabezado
+    //header("Authorization: Bearer $jwt");
 
-    setCookie("jwt", $jwt, );
+    // 2ª Forma: con una cookie
+    setCookie("jwt", $jwt, 0, "/", "dwes.com");
     header("Location: 02bienvenida.php");
   }
   else {
