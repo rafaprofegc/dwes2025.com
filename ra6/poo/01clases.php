@@ -4,7 +4,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/include/funciones.php");
 require_once("Empleado.php");
 inicioHtml("POO en PHP", ["/estilos/general.css"]);
 
-// Instanciar un objeto sin el método constructor
+// 1º Instanciar un objeto sin el método constructor
 /*
 $emp1 = new Empleado;
 
@@ -25,17 +25,17 @@ $propiedadNif = "nif";
 echo "<p>Acceso a nif con una variable {$emp1->$propiedadNif}</p>";
 */
 
-// Instanciar un objeto con el constructor de la clase
+// 2º Instanciar un objeto con el constructor de la clase
 $emp2 = new Empleado("30000001A", "Manuel", "García López", 2000);
 
-// Acceso a las propiedades de la clase con el operador -> y sin $
+// 3º Acceso a las propiedades de la clase con el operador -> y sin $
 echo "<p>Empleado: {$emp2->nif} : {$emp2->nombre} {$emp2->apellidos} y gana {$emp2->salario}</p>";
 
-// Acceso a las constantes de la clase con el operador ::
+// 4º Acceso a las constantes de la clase con el operador ::
 echo "<p>El % de IRPF es " . Empleado::IRPF . " y de Seguridad Social es " . Empleado::SS . "</p>";
 echo "<p>El % de IRPF es " . $emp2::IRPF . " y de Seguridad Social es " . $emp2::IRPF . "</p>";
 
-// Comparación de igualdad con objetos
+// 5º Comparación de igualdad con objetos
 /* Si se usa ==, 2 instancias de objeto son iguales si el valor de todas sus propiedades son iguales.
    Si se usa ===, 2 instancias de objeto son iguales si referencian a la misma instancia */
 $emp3 = new Empleado("30000001A", "Manuel", "García López", 2000);
@@ -51,5 +51,27 @@ $emp4 = $emp3;
 if( $emp4 === $emp3 ) echo "Emp4 y Emp3 son dos variables que apuntan (referencian) al mismo objeto<br>";
 else echo "Emp4 y Emp3 son dos variables que apuntan cada una a un objeto<br>";
 
+// 6º Iteración sobre las propiedades de los objetos
+echo "<h3>Propiedades de los objetos</h3>";
+foreach( $emp2 as $propiedad => $valorPropiedad ) {
+   echo "<p>$propiedad -> $valorPropiedad</p>";
+}
+
+// Solo se puede iterar por las propiedades públicas
+// desde fuera de la clase
+$emp5 = new Empleado("40A", "María", "García", 2500, [], "c/ mayor, 5", "600101010");
+
+foreach($emp5 as $propiedad => $valorPropiedad) {
+   echo "<p>$propiedad: $valorPropiedad</p>";
+}
+
+// 7º Métodos de instancia
+echo "<h3>Métodos de objeto</h3>";
+$salarioNeto = $emp2->getSalarioNeto();
+echo "<p>El salario neto de {$emp2->nombre} es $salarioNeto</p>";
+
+$emp6 = new Empleado("50A", "Javier", "Gómez");
+$salarioNeto = $emp6->getSalarioNeto();
+echo "<p>El salario neto de {$emp6->nombre} es $salarioNeto</p>";
 finHtml();
 ?>
