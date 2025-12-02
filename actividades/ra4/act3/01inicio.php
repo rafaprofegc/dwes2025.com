@@ -7,6 +7,25 @@ pueden pedir pizzas.
 session_start();
 
 require_once($_SERVER['DOCUMENT_ROOT'] . "/include/funciones.php");
+
+// Cierre de sesión
+if( $_SERVER['REQUEST_METHOD'] === "GET" ) {
+  $operacion = filter_input(INPUT_GET, 'op', FILTER_SANITIZE_SPECIAL_CHARS);
+  if( $operacion === "logout" ) {
+    $idSesion = session_name();
+    $parCookie = session_get_cookie_params();
+    setCookie($idSesion, "", time() - 100, 
+    $parCookie['path'], $parCookie['domain'], 
+    $parCookie['secure'], $parCookie['httponly']);
+
+    setCookie("jwt", "", time() - 100, "/");
+
+    session_unset();
+    session_destroy();
+    session_start();
+  }
+}
+
 inicioHtml("Pizzas a domicilio", ["/estilos/general.css", "/estilos/formulario.css"]);
 
 echo "<header>Bienvenido Pizza en moto</header>";

@@ -9,6 +9,7 @@ Las no vegetarianas tienen un incremento de 2 €.
 Si no tiene éxito la autenticación, se presenta una pantalla de error 
 y un enlace al inicio.
 */
+
 require_once($_SERVER['DOCUMENT_ROOT'] . "/include/funciones.php");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/jwt/include_jwt.php");
 
@@ -65,7 +66,7 @@ function AutenticarUsuario(array $datosUsuario): array {
 
   // Iniciamos el pedido
   $_SESSION['ingredientes'] = [];
-  $_SESSION['vegetariana'] = false;
+  //$_SESSION['vegetariana'] = false;
 
   return $payload;
 }
@@ -96,10 +97,9 @@ Teléfono: <?= $datosUsuario['telefono']?></p>
 
 session_start();
 
-$datosAutenticacion = SanearYValidar();
-
-$usuario = AutenticarUsuario($datosAutenticacion);
-
-ComienzoPedido($usuario);
-
+if( $_SERVER['REQUEST_METHOD'] === "POST") {
+  $datosAutenticacion = SanearYValidar(); 
+  $usuario = AutenticarUsuario($datosAutenticacion);
+  ComienzoPedido($usuario);
+}
 ?>
