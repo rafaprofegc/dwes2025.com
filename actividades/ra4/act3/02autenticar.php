@@ -65,7 +65,7 @@ function AutenticarUsuario(array $datosUsuario): array {
 
   // Iniciamos el pedido
   $_SESSION['ingredientes'] = [];
-  $_SESSION['vegetariana'] = false;
+  //$_SESSION['vegetariana'] = false;
 
   return $payload;
 }
