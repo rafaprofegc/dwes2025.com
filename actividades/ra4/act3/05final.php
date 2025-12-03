@@ -18,6 +18,10 @@ if( $_SERVER['REQUEST_METHOD'] === "POST") {
   $extrasValidos = ['eq','br'];
   $extras = array_filter($extras, fn($e) => in_array($e, $extrasValidos));
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
   inicioHtml("Pizza a servir", ["/estilos/general.css", "/estilos/tabla.css"]);
   presentarUsuario($usuario);
 
@@ -55,8 +59,11 @@ if( $_SERVER['REQUEST_METHOD'] === "POST") {
   }
 
   echo "Importe total: " . ($precioBase + $precioNoVe + $precioIng + $precioExtras) . "€</p>";
+<<<<<<< HEAD
 
   echo "<p><a href='01inicio.php?op=logout'>Hacer otro pedido</a></a>";
+=======
+>>>>>>> origin/main
 }
 finHtml();
 ?>

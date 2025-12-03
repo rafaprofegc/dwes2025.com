@@ -2,6 +2,8 @@
 class Empleado {
   // Definición de propiedades
   // <nivel_acceso> [<tipo>] <$propiedad1> [ = <constante1>];
+  /*
+
   public string $nif;
   public string $nombre;
   public string $apellidos;
@@ -11,6 +13,7 @@ class Empleado {
 
   protected ?string $direccion;
   private ?string $telefono;
+  */
 
   // Definición de constantes de clase
   // const <CONSTANTE1> = <valor_cte1>;
@@ -21,10 +24,10 @@ class Empleado {
   // Definición de métodos
   // Constructor de la clase
 
+  /*
   public function __construct(string $nif, string $nombre, string $apellidos,
                               ?float $salario = null, array $cc = [], 
                               string $direccion = "", string $telefono = "") {
-
     $this->nif = $nif;
     $this->nombre = $nombre;
     $this->apellidos = $apellidos;
@@ -34,7 +37,12 @@ class Empleado {
     $this->direccion = $direccion;
     $this->telefono = $telefono;
 
-  }
+  }                              
+  */
+  
+  public function __construct( public string $nif, public string $nombre, 
+    public string $apellidos, public ?float $salario, public array $cc = [] ,
+    protected string $direccion = "", private string $telefono = "") {}
 
   public function getSalarioNeto(): ?float {
     if( $this->salario ) {
@@ -44,6 +52,18 @@ class Empleado {
       return $this->salario - $impSS - $impIRPF;
     }
     return null;
+  }
+
+  // 10º Uso de objetos como argumentos
+  public function esIgual(Empleado $otroEmpleado) : bool {
+    return $this == $otroEmpleado;
+  }
+
+  // 11º Devolución de un objeto
+  public function empleadoDuplicaSalario(): Empleado {
+    $emp = new Empleado($this->nif, $this->nombre, $this->apellidos,
+    $this->salario * 2);
+    return $emp;
   }
 }
 

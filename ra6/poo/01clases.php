@@ -70,8 +70,30 @@ echo "<h3>Métodos de objeto</h3>";
 $salarioNeto = $emp2->getSalarioNeto();
 echo "<p>El salario neto de {$emp2->nombre} es $salarioNeto</p>";
 
-$emp6 = new Empleado("50A", "Javier", "Gómez");
+$emp6 = new Empleado("50A", "Javier", "Gómez", 3000);
 $salarioNeto = $emp6->getSalarioNeto();
 echo "<p>El salario neto de {$emp6->nombre} es $salarioNeto</p>";
+
+// 8º Tipos de datos en propiedades de método y devolución de método
+
+// 9º Promoción del constructor
+$emp7 = new Empleado("60A", "Manuela", "Sánchez", 4000);
+
+// 10º Uso de objetos (instancias) como argumentos de métodos
+echo "<h3>Uso de objetos como argumentos en métodos</h3>";
+$emp8 = new Empleado("60A", "Manuela", "Sánchez", 4000);
+
+if( $emp7->esIgual($emp8) ) {
+   echo "<p>Emp7 y Emp8 son iguales</p>";
+}
+else {
+   echo "<p>Emp7 y Emp8 son DIFERENTES</p>";
+}
+
+// 11º Devolución de objetos en un método
+$emp9 = $emp8->empleadoDuplicaSalario();
+echo "<h3>Devolución de objetos en un método</h3>";
+echo "<p>El empleado 9 es $emp9->nombre $emp9->apellidos y gana $emp9->salario €</p>";
+
 finHtml();
 ?>

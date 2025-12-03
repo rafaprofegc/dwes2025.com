@@ -12,6 +12,7 @@ if( $_SERVER['HTTP_REFERER'] != "http://dwes.com/actividades/ra4/act3/02autentic
 
 session_start();
 
+<<<<<<< HEAD
 if( $_SERVER['REQUEST_METHOD'] !== "POST") {
   exit();
 }
@@ -24,6 +25,16 @@ if( $operacion === "Añadir ingredientes") {
   else $_SESSION['tipo'] = "NV";
 }
 
+=======
+$usuario = comprobarJWT();
+$operacion = filter_input(INPUT_POST, 'operacion', FILTER_SANITIZE_SPECIAL_CHARS);
+if( $operacion === "Añadir ingredientes") {
+  $tipo = filter_input(INPUT_POST, 'tipo', FILTER_SANITIZE_SPECIAL_CHARS);
+  if( $tipo == "V") $_SESSION['tipo'] = "V";
+  else $_SESSION['tipo'] = "NV";
+}
+
+>>>>>>> origin/main
 $tipo = $_SESSION['tipo'];
 $ingredientes = $tipo === "V" ? $vegetarianos : $noVegetarianos;
 
