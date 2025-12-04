@@ -2,6 +2,7 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . "/include/funciones.php");
 
 require_once("Direccion.php");
+require_once("Empleado.php");
 
 inicioHtml("Métodos mágicos", ["/estilos/general.css"]);
 
@@ -44,9 +45,60 @@ else {
   echo "<p>La propiedad provincia NO EXISTE o es null</p>";
 }
 
+echo "<h3>Borrado de propiedades</h3>";
+/*
 unset($dir1->tipoVia);
 echo "<p>El tipo de vía en dir1 es {$dir1->provincia}</p>";
 echo "<p>El tipo de vía en dir1 es {$dir1->tipoVia}</p>";
+*/
+echo "<h3>Convertir objeto en cadena</h3>";
+echo "<p>Dirección 1" . $dir1 . "</p>";
+
+echo "<h3>Clonación de objetos</h3>";
+$num1 = 8;
+$num2 = $num1;
+$num1 = 10;
+echo "<p>Los tipos primitivos tienen su propio espacio: $num1 y $num2</p>";
+
+$dir2 = $dir1;
+echo "<p>" . ($dir1 === $dir2 ? "dir1 y dir2 apuntan al mismo objeto en memoria" : "Hay 2 objetos") . "</p>";
+
+$dir2 = clone $dir1;
+echo "<p>" . ($dir1 === $dir2 ? "dir1 y dir2 apuntan al mismo objeto en memoria" : "Hay 2 objetos") . "</p>";
+
+/* Proceso en la clonación de un objeto 
+  - Se crea un nuevo objeto
+  - Se copian el valor de todas las propieddades del objeto clonado
+    en el nuevo objeto.
+  - Ejemplo
+    $dir2 = clone $dir1
+
+    $dir2 = new Direccion();
+    $dir2->tipoVia = $dir1->tipoVia
+    $dir2->nombreVia = $dir1->nombreVia
+    ...
+    $dir2->localidad = $dir1->localidad
+  */
+
+$emp1 = new Empleado("30A", "Manuel", "García", 2000, [], $dir1, "957");
+$emp2 = clone $emp1;
+
+/*
+  $emp2 = new Empleado()
+  $emp2->nombre = $emp1->nombre
+  $emp2->apellidos = $emp1->apellidos
+  ...
+  $emp2->direccion = $emp1->direccion;
+
+  // Si tiene el método __clone()
+  $this->direccion = clone $this->direccion;
+*/
+if( $emp1->direccion === $emp2->direccion ) {
+  echo "<p>Los dos empleados apuntan a la misma dirección</p>";
+}
+
+echo "<h3>Sobrecarga de métodos</h3>";
+$dir1->setTipoVia("Av");
 
 finHtml();
 ?>

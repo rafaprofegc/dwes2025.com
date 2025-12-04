@@ -83,5 +83,23 @@ class Direccion {
       echo "<p>Warning: La propiedad $propiedad no existe en " . __CLASS__ . "</p>";
     }
   }
+
+  public function __toString(): string {
+    $cadena = "{$this->tipoVia} {$this->nombreVia} {$this->numero}<br>";
+    $cadena.= "{$this->portal} {$this->escalera} {$this->planta} {$this->puerta}<br>";
+    $cadena.= "{$this->cp} {$this->localidad}";
+
+    return $cadena;
+  }
+
+  private function convierteTipoVia(): string {
+    $nombres= [ 'c/' => "Calle", 'Av' => "Avenida", 'Pz' => "Plaza"];
+    return $nombres[$this->tipoVia];
+  }
+
+  public function __call(string $metodo, array $argumentos ): mixed {
+
+  }
+
 }
 ?>

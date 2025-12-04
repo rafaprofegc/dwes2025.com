@@ -2,7 +2,6 @@
 class Empleado {
   // Definición de propiedades
   // <nivel_acceso> [<tipo>] <$propiedad1> [ = <constante1>];
-  /*
 
   public string $nif;
   public string $nombre;
@@ -11,9 +10,8 @@ class Empleado {
 
   public array $cc;
 
-  protected ?string $direccion;
+  public Direccion $direccion;
   private ?string $telefono;
-  */
 
   // Definición de constantes de clase
   // const <CONSTANTE1> = <valor_cte1>;
@@ -24,10 +22,9 @@ class Empleado {
   // Definición de métodos
   // Constructor de la clase
 
-  /*
   public function __construct(string $nif, string $nombre, string $apellidos,
                               ?float $salario = null, array $cc = [], 
-                              string $direccion = "", string $telefono = "") {
+                              Direccion $direccion, string $telefono = "") {
     $this->nif = $nif;
     $this->nombre = $nombre;
     $this->apellidos = $apellidos;
@@ -36,13 +33,13 @@ class Empleado {
 
     $this->direccion = $direccion;
     $this->telefono = $telefono;
-
   }                              
-  */
   
+  /*
   public function __construct( public string $nif, public string $nombre, 
     public string $apellidos, public ?float $salario, public array $cc = [] ,
     protected string $direccion = "", private string $telefono = "") {}
+  */
 
   public function getSalarioNeto(): ?float {
     if( $this->salario ) {
@@ -61,9 +58,14 @@ class Empleado {
 
   // 11º Devolución de un objeto
   public function empleadoDuplicaSalario(): Empleado {
+    $dir = new Direccion("c/", "Mayor", 5, 3, "A", 4,"B",28000, "Madrid");
     $emp = new Empleado($this->nif, $this->nombre, $this->apellidos,
-    $this->salario * 2);
+    $this->salario * 2, [], $dir);
     return $emp;
+  }
+
+  public function __clone(): void {
+    $this->direccion = clone $this->direccion;
   }
 }
 
