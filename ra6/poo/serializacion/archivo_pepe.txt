@@ -1,0 +1,8 @@
+09/12/2025 19:58:33 -> El usuario pepe ha abierto sesión
+09/12/2025 19:58:33 -> El usuario puede ir a su zona de perfil
+09/12/2025 19:58:50 -> Recuperada la sesión
+09/12/2025 20:05:36 -> El usuario pepe ha abierto sesión
+09/12/2025 20:05:36 -> El usuario puede ir a su zona de perfil
+09/12/2025 20:05:39 -> El usuario pepe ha abierto sesión
+09/12/2025 20:05:39 -> El usuario puede ir a su zona de perfil
+09/12/2025 20:05:41 -> Recuperada la sesión

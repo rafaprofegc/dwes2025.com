@@ -1,5 +1,19 @@
 <?php
 class Direccion {
+  /* Nivel de acceso:
+  Cada miembro de la clase (propiedad, constante o método) tiene un nivel
+  de acceso que indica donde es visible y accesible:
+
+  - public -> Nivel de acceso público. El miembro es visible y accesible
+    desde cualquier lugar: dentro o fuera de la clase.
+
+  - private -> Nivel de acceso privado. El miembro SOLO ES VISIBLE Y
+    ACCESIBLE dentro de su clase.
+
+  - protected -> Nivel de acceso protegido. El miembro SOLO ES VISIBLE Y
+    ACCESIBLE dentro de su clase y clases derivadas
+
+  */
   private ?string $tipoVia;
   private string $nombreVia;
   private int $numero;
@@ -12,6 +26,10 @@ class Direccion {
 
   private const PROPIEDADES = ['tipoVia', 'nombreVia', 'numero'];
   private const TIPOS_VIAS = ["c/", "Av", "Pz", "Crta", "Ronda"];
+
+  private const MAPEO_METODOS = ['cambiarVia' => 'setTipoVia', 
+                                 'cambiarNombreVia' => 'setNombreVia',
+                                 'ponVia' => 'setTipoVia'];
 
   public function __construct(string $tv, string $nv, int $n, int $p, 
     string $e, int $pl, string $pu, int $cp, string $l ){
@@ -98,8 +116,29 @@ class Direccion {
   }
 
   public function __call(string $metodo, array $argumentos ): mixed {
-
+    if( method_exists(self::class, $metodo) ) {
+      return $this->$metodo(...$argumentos);
+    }
+    else {
+      //echo "<h4>Error. El método $metodo no existe</h4>";
+      //return null;
+      if( array_key_exists($metodo, self::MAPEO_METODOS) ) {
+        $metodoTraducido = self::MAPEO_METODOS[$metodo];
+        return $this->$metodoTraducido(...$argumentos);
+      }
+      else {
+        echo "<h4>Error. El método $metodo no existe</h4>";
+        return null;
+      }
+    }
   }
 
+  public function __debugInfo(): array {
+    $salida = [];
+    foreach($this as $propiedad => $valor) {
+      $salida[$propiedad] = $valor;
+    }
+    return $salida;
+  }
 }
 ?>

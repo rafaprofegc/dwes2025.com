@@ -99,6 +99,20 @@ if( $emp1->direccion === $emp2->direccion ) {
 
 echo "<h3>Sobrecarga de métodos</h3>";
 $dir1->setTipoVia("Av");
+echo "$dir1";
+
+$dir1->metodoNoExiste();
+
+// Mapeo de métodos
+$dir1->cambiarVia("Pz");
+echo "$dir1<br>";
+
+$dir1->ponVia("Crta");
+echo "$dir1<br>";
+
+// Depuración de objetos
+echo "<h3>Depuración de objetos</h3>";
+var_dump($dir1);
 
 finHtml();
 ?>

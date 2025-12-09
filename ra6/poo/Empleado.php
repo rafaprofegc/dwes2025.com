@@ -67,6 +67,22 @@ class Empleado {
   public function __clone(): void {
     $this->direccion = clone $this->direccion;
   }
+
+
+  // Métodos estáticos
+  /*
+  Un método estático pertenece a la clase, no a una instancia de objeto
+  Se pueden ejecutar sin instanciar ningún objeto de la clase
+
+  Problema: Para instanciarse necesito el nombre de la clase.
+  Si uso la clase, en el método no puedo utilizar ninguna propiedad
+  solo las variables locales del propio método o las constantes de clase
+  o las propiedades estáticas de la clase.
+  */
+  public static function getPorcentajes(): string {
+    return "IRPF: " . (self::IRPF  * 100) . " - SS: " . (self::SS * 100);
+  }
+
 }
 
 ?>
