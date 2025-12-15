@@ -1,4 +1,6 @@
 <?php
+require_once("Direccion.php");
+
 class Empleado {
   // Definición de propiedades
   // <nivel_acceso> [<tipo>] <$propiedad1> [ = <constante1>];
@@ -10,21 +12,24 @@ class Empleado {
 
   public array $cc;
 
-  public Direccion $direccion;
+  public ?Direccion $direccion;
   private ?string $telefono;
 
   // Definición de constantes de clase
   // const <CONSTANTE1> = <valor_cte1>;
-  const float IRPF = 0.2;
+  public const float IRPF = 0.2;
   const float SS = 0.05;
   const float SALARIO_BASE = 2000;
+
+  // Definición de propiedades estáticas
+  public static float $IRPF2 = 0.2;
   
   // Definición de métodos
   // Constructor de la clase
 
   public function __construct(string $nif, string $nombre, string $apellidos,
                               ?float $salario = null, array $cc = [], 
-                              Direccion $direccion, string $telefono = "") {
+                              ?Direccion $direccion, string $telefono = "") {
     $this->nif = $nif;
     $this->nombre = $nombre;
     $this->apellidos = $apellidos;
@@ -68,9 +73,9 @@ class Empleado {
     $this->direccion = clone $this->direccion;
   }
 
-
-  // Métodos estáticos
+  // Miembros estáticos
   /*
+  
   Un método estático pertenece a la clase, no a una instancia de objeto
   Se pueden ejecutar sin instanciar ningún objeto de la clase
 
@@ -79,8 +84,14 @@ class Empleado {
   solo las variables locales del propio método o las constantes de clase
   o las propiedades estáticas de la clase.
   */
+
   public static function getPorcentajes(): string {
-    return "IRPF: " . (self::IRPF  * 100) . " - SS: " . (self::SS * 100);
+    $irpf = self::IRPF;
+    $ss = self::SS;
+
+
+
+    return "IRPF: " . ($irpf  * 100) . " - SS: " . ($ss * 100);
   }
 
 }
