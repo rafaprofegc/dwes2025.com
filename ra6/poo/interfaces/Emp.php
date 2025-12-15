@@ -12,6 +12,12 @@ class Emp implements GestionSeguridad {
     $this->nombre = $no;
   }
 
+  public function __get(string $propiedad): mixed {
+    if( property_exists($this, $propiedad) ) {
+      return $this->$propiedad;
+    }
+    return null;
+  }
   public function __toString(): string {
     return "Emp: {$this->nif} {$this->nombre}";
   }

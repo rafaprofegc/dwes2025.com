@@ -12,6 +12,13 @@ class Cliente implements GestionSeguridad {
     $this->nombre = $n;
   }
 
+  public function __get(string $propiedad): mixed {
+    if( property_exists($this, $propiedad) ) {
+      return $this->$propiedad;
+    }
+    return null;
+  }
+  
   public function __toString(): string {
     return "Cliente: {$this->email} {$this->nombre}";
   }
