@@ -1,5 +1,5 @@
 <?php
-class Vivienda {
+abstract class Vivienda {
   protected string $ref;
   protected string $direccion;
   protected int $superficie;
@@ -28,7 +28,10 @@ class Vivienda {
     return "Vivienda: {$this->ref} {$this->direccion} {$this->superficie} m<sup>2</sup>";
   }
 
+  /*
   public function getValorEstimado(float $precioMetro): float {
     return $this->superficie * $precioMetro;
   }
+    */
+  public abstract function getValorEstimado(float $precioMetro): float;
 }

@@ -23,12 +23,22 @@ class Piso extends Vivienda {
     return $vivienda . " - {$this->planta} {$this->puerta}";  
   }
 
-  
+  /*
   public function getValorEstimado(float $precioMetro): float {
     $valorVivienda = parent::getValorEstimado($precioMetro);
     //$valorVivienda = $this->superficie * $precioMetro;
     $valorPiso = $valorVivienda + $valorVivienda * $this->planta * self::$INCREMENTO_PLANTA;
     return $valorPiso;
+  }
+  */
+  public function getValorEstimado(float $precioMetro): float {
+    $valorPiso = $this->superficie * $precioMetro;
+    $valorPiso += $valorPiso * $this->planta * self::$INCREMENTO_PLANTA;
+    return $valorPiso;
+  }
+
+  public final function getPlantaPuerta(): string {
+    return "{$this->planta} - {$this->puerta}";
   }
   
   
