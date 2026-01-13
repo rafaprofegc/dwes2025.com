@@ -1,0 +1,20 @@
+[12/01/2026 19:42:57] - app DEBUG: Estos es una línea de depuración de la aplicación 
+[12/01/2026 19:42:57] - app INFO: Usuario autenticado con éxito: [usuario: pepe] 
+[12/01/2026 19:42:57] - app WARNING: Advertencia: el espacio en disco ha llegado al 90% 
+[12/01/2026 19:42:57] - app ERROR: Error en la conexión con la BD. Error: 500 usuario no existe 
+[12/01/2026 19:42:57] - app CRITICAL: Error crítico de la aplicación 
+[12/01/2026 19:58:09] - app DEBUG: Estos es una línea de depuración de la aplicación 
+[12/01/2026 19:58:09] - app INFO: Usuario autenticado con éxito: [usuario: pepe] 
+[12/01/2026 19:58:09] - app WARNING: Advertencia: el espacio en disco ha llegado al 90% 
+[12/01/2026 19:58:09] - app ERROR: Error en la conexión con la BD. Error: 500 usuario no existe 
+[12/01/2026 19:58:09] - app CRITICAL: Error crítico de la aplicación 
+[12/01/2026 20:00:48] - app DEBUG: Estos es una línea de depuración de la aplicación 
+[12/01/2026 20:00:48] - app INFO: Usuario autenticado con éxito: [usuario: pepe] 
+[12/01/2026 20:00:48] - app WARNING: Advertencia: el espacio en disco ha llegado al 90% 
+[12/01/2026 20:00:48] - app ERROR: Error en la conexión con la BD. Error: 500 usuario no existe 
+[12/01/2026 20:00:48] - app CRITICAL: Error crítico de la aplicación 
+[12/01/2026 20:06:48] - app DEBUG: Estos es una línea de depuración de la aplicación 
+[12/01/2026 20:06:48] - app INFO: Usuario autenticado con éxito: [usuario: pepe] 
+[12/01/2026 20:06:48] - app WARNING: Advertencia: el espacio en disco ha llegado al 90% 
+[12/01/2026 20:06:48] - app ERROR: Error en la conexión con la BD. Error: 500 usuario no existe 
+[12/01/2026 20:06:48] - app CRITICAL: Error crítico de la aplicación 
