@@ -3,9 +3,10 @@
 namespace ra5\util;
 
 use Exception;
+use Error;
 
 class Util {
-  public static function MuestraExcepcion(Exception $e) {
+  public static function MuestraExcepcion(Exception | Error $e) {
     echo "<h3>Error de la aplicación</h3>";
     echo "<p>Código de error: {$e->getCode()}<br>";
     echo "Mensaje de error: {$e->getMessage()}<br>";
