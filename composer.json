@@ -1,5 +1,10 @@
 {
   "require": {
     "monolog/monolog": "3.10.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "EN\\": "ra6/poo/EN"
+    }
   }
 }

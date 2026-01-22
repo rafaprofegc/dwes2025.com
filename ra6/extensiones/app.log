@@ -1,0 +1,5 @@
+[2026-01-22T14:25:12.688384+00:00] - app DEBUG: Esto es un mensaje de depuración []
+[2026-01-22T14:25:12.688671+00:00] - app INFO: El usuario se ha autenticado {"usuario":"pepe"}
+[2026-01-22T14:25:12.688706+00:00] - app WARNING: Advertencia: el espacio ocupado en el disco ha llegado al 90% []
+[2026-01-22T14:25:12.688778+00:00] - app ERROR: Error en la conexión a la base de datos {"error":500,"mensaje":"El usuario no existe en la BD"}
+[2026-01-22T14:25:12.688802+00:00] - app CRITICAL: ¡Fallo crítico del sistema! []
