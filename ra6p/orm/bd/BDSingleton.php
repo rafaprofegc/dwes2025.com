@@ -21,7 +21,7 @@ class BDSingleton {
   }
   
   public static function getInstancia() {
-    if( self::$instancia === null ) {
+    if( !isset(self::$instancia) ) {
       self::$instancia = new self(); // new BDSingleton();
     }
     return self::$instancia;

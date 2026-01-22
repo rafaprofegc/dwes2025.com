@@ -12,7 +12,8 @@ use ra6p\orm\entidad\Articulo;
 Html::inicioHtml("ORM", ["/estilos/general.css", "/estilos/tabla.css"]);
 
 try {
-  $ormArticulo = new ORMArticulo( BDSingleton::getInstancia()->getPDO() );
+  $pdo = BDSingleton::getInstancia()->getPDO();
+  $ormArticulo = new ORMArticulo( $pdo );
 
   // Obtener un artículo. Método get
   echo "<h3>Búsqueda de un artículo</h3>";
