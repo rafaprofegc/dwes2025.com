@@ -1,6 +1,6 @@
 <?php
 
-namespace ra5\util;
+namespace ra5p\util;
 
 use Exception;
 use Error;

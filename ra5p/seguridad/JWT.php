@@ -1,5 +1,5 @@
 <?php
-namespace ra5\seguridad;
+namespace ra5p\seguridad;
 
 class JWT {
   public static function generarJWT(array $usuario): string {

@@ -2,12 +2,12 @@
 namespace ra6p\orm\bd;
 
 use PDOException;
-use ra5\util\Util;
+use ra5p\util\Util;
 
 // Conexión a la BD con patrón Singleton
 
 class BDSingleton {
-  private static BDSingleton $instancia;
+  private static ?BDSingleton $instancia = null;
   private \PDO $pdo;
 
   private function __construct() {
@@ -21,7 +21,7 @@ class BDSingleton {
   }
   
   public static function getInstancia() {
-    if( !isset(self::$instancia) ) {
+    if( self::$instancia === null) {
       self::$instancia = new self(); // new BDSingleton();
     }
     return self::$instancia;

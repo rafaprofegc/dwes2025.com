@@ -1,8 +1,8 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . "/vendor/autoload.php");
 
-use ra5\util\Html;
-use ra5\util\Util;
+use ra5p\util\Html;
+use ra5p\util\Util;
 use ra6p\orm\bd\BDFactory;
 USE ra6p\orm\bd\BDSingleton;
 
@@ -76,14 +76,14 @@ try {
 
   // Crear un artículo. Método insert()
   $nuevoArticulo = new Articulo([
-    'referencia'  => 'ACIN0016',
-    'descripcion' => 'Hub USB C',
+    'referencia'  => 'ALCO0010',
+    'descripcion' => 'Whiskey Irlandes',
     'pvp'         => 40.5,
     'dto_venta'   => 0.15,
     'und_vendidas'=> 0,
     'und_disponibles' => 20,
     'fecha_disponible' => null,
-    'categoria' => 'ACIN',
+    'categoria' => 'ALCO',
     'tipo_iva' => 'N'
   ]);
 
@@ -99,7 +99,7 @@ try {
 
   echo "<h3>Modificar un artículo insertado</h3>";
   $articulo = $ormArticulo->get($nuevoArticulo->referencia);
-  $articulo->descripcion = "Hub USC C Modificado";
+  $articulo->descripcion = "Whiskey Tailandes";
   $articulo->pvp = 50.5;
   $articulo->dto_venta = 0.2;
   $articulo->und_disponibles = null;

@@ -1,5 +1,5 @@
 <?php
-namespace ra5\util;
+namespace ra5p\util;
 
 class Html {
   public static function inicioHtml(string $titulo, array $estilos) { ?>
