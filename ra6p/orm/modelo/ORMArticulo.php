@@ -29,4 +29,44 @@ class ORMArticulo extends ORMBase {
     }
     return $filas;
   }
+
+  public function ejecutaSQL(array $parametros): array {
+    $sql = "SELECT * FROM {$this->tabla} ";
+    // ['descripcion' => $valor]
+    $tipos = Articulo::getTipos();
+    $columnas = array_map( function($columna) use ($tipos) {
+      $operador = $tipos[$columna] === "string" ? "LIKE" : "=";
+      return "$columna $operador :$columna";
+    }, array_keys($parametros)
+    );
+    /*
+    Igual con foreach
+
+    $columnas = [];
+    $tipos = Articulo::getTipos();
+    foreach( array_keys($parametros) as $columna ) {
+      $operador = $tipos[$columna] === "string" ? "LIKE" : "=";
+      $columnas[] = "$columna $operador :$columna";
+    }
+    */
+
+    $clausulaWhere = "WHERE " . implode(" AND ", $columnas);
+    $sql.= $clausulaWhere;
+
+    $stmt = $this->cbd->prepare($sql);
+    array_walk($parametros, function(string $valor, string $columna) 
+      use ($stmt, $tipos) {
+      $v = $tipos[$columna] === "string" ? "%$valor%" : $valor;
+      $stmt->bindValue($columna, $v);
+    });
+
+    $filas = [];
+    $clase = $this->getClaseEntidad();
+    if( $stmt->execute() ) {
+      while( $fila = $stmt->fetch() ) {
+        $filas[] = new $clase($fila);
+      }
+    } 
+    return $filas;
+  }
 }

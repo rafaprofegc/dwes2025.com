@@ -13,7 +13,7 @@ class Controlador {
 
   public function despachaPeticion() {
     // 1º Obtener la petición de un parámetro GET o POST
-    $idp = $_GET['idp'] && $_POST['idp'] && "main";
+    $idp = $_GET['idp'] ?? $_POST['idp'] ?? "main";
     $this->peticion = filter_var($idp, FILTER_SANITIZE_SPECIAL_CHARS);
 
     try {

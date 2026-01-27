@@ -10,6 +10,12 @@ class ErrorAplicacion extends Exception {
     parent::__construct($mensaje, $codigo, null);
     $this->puntoRecuperacion = $pr;
   }
+
+  public function getPuntoRecuperacion(): array {
+    return $this->puntoRecuperacion;
+  }
 }
+
+
 
 ?>
