@@ -31,7 +31,7 @@ abstract class ORMBase {
   }
 
   // Read
-  public function get(mixed $id): Entidad {
+  public function get(mixed $id): ?Entidad {
     $sql = "SELECT * FROM {$this->tabla} ";
     $sql.= "WHERE {$this->clavePrimaria} = :id";
 

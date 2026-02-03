@@ -2,26 +2,33 @@
 namespace ra5p\rest\controlador;
 
 use ra5p\mvc\error\ErrorAplicacion;
+use ra5p\seguridad\Auth;
 
 class Controlador {
 
   protected array $peticiones;
   protected Peticion $peticion;
 
-  protected const NS_MODELOS = "rest\\modelo\\";
-  protected const NS_VISTAS = "rest\\vista\\";
+  protected const NS_MODELOS = "ra5p\\rest\\modelo\\";
+  protected const NS_VISTAS = "ra5p\\rest\\vista\\";
 
   protected string $vistaError = "VError";
   
   public function __construct() {
     $this->peticiones = [
+      new Peticion("GET", "#^/$#", "MMain", "VMain", false),
       new Peticion("GET", "#^/articulos$#", "MGetArticulos", "VGetArticulos"),
       new Peticion("GET", "#^/articulos/(\w+)$#", "MGetArticulo", "VGetArticulo"),
       new Peticion("GET", "#^/articulos/new$#", "MNewArticulo", "VNewArticulo"),
       new Peticion("GET", "#^/articulos/(\w+)/edit#", "MEditArticulo", "VEditArticulo"),
       new Peticion("POST", "#^/articulos$#", "MSaveArticulo", "VSaveArticulo"),
       new Peticion("PUT", "#^/articulos/(\w+)$#", "MUpdateArticulo", "VUpdateArticulo"),
-      new Peticion("DELETE", "#^/articulos/(\w+)$#", "MDeleteArticulo", "VDeleteArticulo")
+      new Peticion("DELETE", "#^/articulos/(\w+)$#", "MDeleteArticulo", "VDeleteArticulo"),
+
+      new Peticion("GET", "#^/login$#", null, "VFormLogin"),
+      new Peticion("POST", "#^/login$#", "MLogin", null),
+
+      new Peticion("POST", "#^/reseñas$#", "MSaveReseña", "VSaveReseña", true )
     ];
 
     $this->despachaPeticion();
@@ -35,31 +42,45 @@ class Controlador {
 
       // Buscamos la petición
       $this->peticion = $this->getPeticion($metodoPeticion, $pathPeticion);
-
-      // Obtenemos las clases modelo y vista de la petición
-      $claseModelo = self::NS_MODELOS . $this->peticion->getClaseModelo();
-      $claseVista = self::NS_VISTAS . $this->peticion->getClaseVista();
+    
+      // Comprobar si la petición requiere autenticación
+      if( $this->peticion->getRequiereAuth() ) {
+        if( !Auth::check() ) {
+          header("Location: /login");
+          exit;
+        }
+      }
 
       // Comprobamos si las clases existen
-      if( !class_exists($claseModelo) ) {
+      // Obtenemos las clases modelo y vista de la petición
+      $claseModelo = $this->peticion->getClaseModelo() ;
+      $claseVista = $this->peticion->getClaseVista();
+
+      if( $claseModelo !== null  && !class_exists(self::NS_MODELOS . $claseModelo) ) {
         throw new ErrorAplicacion("La clase modelo $claseModelo no existe", 3, 
           ['url' => "/", 'texto' => "Ir al inicio de la aplicación"]);
       }
 
-      if( !class_exists($claseVista) ) {
+      if( $claseVista !== null && !class_exists(self::NS_VISTAS . $claseVista) ) {
         throw new ErrorAplicacion("La clase vista $claseVista no existe", 4, 
           ['url' => "/", 'texto' => "Ir al inicio de la aplicación"]);
       }
 
       // Instanciar las clases, ejecutar lógica de negocio y generar salida
-      $modelo = new $claseModelo();
-      $uriPeticion = $this->peticion->getExpRegURI();
-      $parametros = $this->getParametros($pathPeticion, $uriPeticion);
-      $datos = $modelo->procesaPeticion($parametros);  // /articulos/acin0001
-
+      if( $claseModelo ) {
+        $modelo = new (self::NS_MODELOS . $claseModelo)();
+        $uriPeticion = $this->peticion->getExpRegURI();
+        $parametros = $this->getParametros($pathPeticion, $uriPeticion);
+        $datos = $modelo->procesaPeticion($parametros);  // /articulos/acin0001
+      }
+      
+      if( $claseVista ) {
+        $vista = new (self::NS_VISTAS . $claseVista)();
+        $vista->generaSalida($datos ?? null);
+      }
     }
     catch( \Exception $e ) {
-      $vista = new ($this->vistaError)();
+      $vista = new (self::NS_VISTAS . $this->vistaError)();
       $vista->generaSalida($e);
     }
   }

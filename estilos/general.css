@@ -18,8 +18,12 @@ header {
 }
 
 #cabecera {
-  text-align: right;
-  font-size: 1em;
-  border-bottom: 0.2em outset gray;
-  padding: 1em;
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  border: 1px solid black;
+}
+
+#cabecera form {
+  justify-self:flex-end;
 }
