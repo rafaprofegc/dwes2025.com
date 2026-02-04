@@ -19,7 +19,7 @@ class Auth {
 
   public static function cliente(): ?Cliente {
     if( self::check() && isset($_SESSION['cliente']) ) {
-      return new Cliente($_SESSION['cliente']);
+      return $_SESSION['cliente'];
     }
     return null;
   }
@@ -29,7 +29,7 @@ class Auth {
     $payload = ['email' => $cliente->email];
     $jwt = JWT::generarJWT($payload);
     setcookie(self::COOKIE_JWT, $jwt, 0, "/");
-    $_SESSION['cliente'] = $cliente->toArray();
+    $_SESSION['cliente'] = $cliente;
     $_SESSION['carrito'] = [];
   } 
 

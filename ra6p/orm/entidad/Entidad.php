@@ -95,5 +95,15 @@ abstract class Entidad {
     }
     return $columnas;   
   }
+
+  public function __serialize(): array {
+    return $this->toArray();
+  }
+
+  public function __unserialize(array $datos): void {
+    array_walk($datos, function(mixed $valor, string $propiedad) {
+      $this->__set($propiedad, $valor);
+    });
+  }
 }
 ?>

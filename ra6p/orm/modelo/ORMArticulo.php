@@ -69,4 +69,33 @@ class ORMArticulo extends ORMBase {
     } 
     return $filas;
   }
+
+  public function ultimasCompras(string $nif): array {
+    $sql = "SELECT npedido, fecha, referencia, descripcion, unidades, precio, dto ";
+    $sql.= "FROM pedido ";
+    $sql.= "INNER JOIN lpedido USING(npedido) ";
+    $sql.= "INNER JOIN articulo USING(referencia) ";
+    $sql.= "WHERE nif = :nif";
+
+    $stmt = $this->cbd->prepare($sql);
+    $stmt->bindValue(":nif", $nif);
+    $stmt->execute();
+
+    return $stmt->fetchAll();
+  }
+
+  public function haComprado(string $nif, string $referencia): bool {
+    $sql = "SELECT nif, referencia FROM pedido ";
+    $sql.= "INNER JOIN lpedido USING(npedido) ";
+    $sql.= "WHERE nif = :nif AND referencia = :referencia";
+
+    $stmt = $this->cbd->prepare($sql);
+    $stmt->bindValue(":nif", $nif);
+    $stmt->bindValue(":referencia", $referencia);
+    $stmt->execute();
+    $filas = count($stmt->fetchAll());
+    //return $stmt->rowCount() > 0;
+    return $filas > 0;
+
+  }
 }
