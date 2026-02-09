@@ -13,6 +13,7 @@ class MSaveReseña implements Modelo {
       'referencia'    => FILTER_SANITIZE_SPECIAL_CHARS,
       'clasificacion' => [
         'filter'  => FILTER_VALIDATE_INT,
+        'flags'   => FILTER_NULL_ON_FAILURE,
         'options' => ['min_range' => 0, 'max_range' => 5]
       ],
       'comentario'    => FILTER_SANITIZE_SPECIAL_CHARS
@@ -20,12 +21,12 @@ class MSaveReseña implements Modelo {
 
     $datosValidados = filter_input_array(INPUT_POST, $filtros);
 
-    $datosValidados['nif'] = preg_match("/[0-9]{8}[A-Za-z]/", $datosValidados['nif']) ? : false;
+    $datosValidados['nif'] = preg_match("/[0-9]{8}[A-Za-z]/", $datosValidados['nif']) ? $datosValidados['nif'] : false;
 
     $obligatorios = ['nif', 'referencia', 'clasificacion'];
-    array_filter($datosValidados);
+    $datosFiltrados = array_filter($datosValidados, fn(mixed $e) => $e !== null);
 
-    $faltan = array_diff($obligatorios, array_keys($datosValidados));
+    $faltan = array_diff($obligatorios, array_keys($datosFiltrados));
     if( count($faltan) > 0 ) {
       throw new ErrorAplicacion("Algún dato obligatorio no está presente", 9,
         ['url' => '/', 'texto' => "Ir al inicio de la aplicación"]);

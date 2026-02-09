@@ -15,20 +15,23 @@ class VError extends Vista {
     <h3>Error de la aplicación</h3>
     <table>
       <tbody>
-        <tr>
-          <td>Código de error</td><td>{$error->getCode()}</td>
-          <td>Mensaje de error</td><td>{$error->getMessage()}</td>
-          <td>Archivo</td><td>$archivo</td>
-          <td>Línea</td><td>{$error->getLine()}</td>
+        <tr><td>Código de error</td><td>{$error->getCode()}</td></tr>
+        <tr><td>Mensaje de error</td><td>{$error->getMessage()}</td></tr>
+        <tr><td>Archivo</td><td>$archivo</td></tr>
+        <tr><td>Línea</td><td>{$error->getLine()}</td></tr>
     ERROR;
     
     if( $error instanceof ErrorAplicacion ) {
       $pr = $error->getPuntoRecuperacion();
       echo <<<ERROR
-          <td>Punto de recuperación</td>
-          <td><a href="{$pr['url']}">{$pr['texto']}</a></td>
+          <tr><td>Punto de recuperación</td>
+          <td><a href="{$pr['url']}">{$pr['texto']}</a></td></tr>
       ERROR;
     }
+    echo <<<ERROR
+      </tbody>
+    </table>
+    ERROR;
     $this->finHtml();
     ob_end_flush();
   }

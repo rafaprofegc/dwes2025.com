@@ -8,7 +8,7 @@ class VNewReseña extends Vista {
     $this->inicioHtml("Añadir una nueva reseña", ["/estilos/general.css", "/estilos/formulario.css"]);
     echo <<<FORM
     <h3>Añadir una nueva reseña</h3>
-    <form method="POST" action="/reseñas">
+    <form method="POST" action="/resenas">
       <input type="hidden" name="nif" id="nif" value="{$this->cliente->nif}">
       <input type="hidden" name="referencia" id="referencia" value="{$articulo->referencia}">
 

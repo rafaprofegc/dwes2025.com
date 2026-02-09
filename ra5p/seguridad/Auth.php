@@ -12,13 +12,14 @@ class Auth {
     if( isset($_COOKIE[self::COOKIE_JWT]) ) {
       $jwt = $_COOKIE[self::COOKIE_JWT];
       $payload = JWT::verificarJWT($jwt);
-      return (bool)$payload;
+
+      return (bool)$payload && isset($_SESSION['cliente']);
     }
     return false;
   }
 
   public static function cliente(): ?Cliente {
-    if( self::check() && isset($_SESSION['cliente']) ) {
+    if( self::check() ) {
       return $_SESSION['cliente'];
     }
     return null;
@@ -43,6 +44,7 @@ class Auth {
     setcookie(self::COOKIE_JWT, "", time() - 100, "/");
     session_destroy();
     $_SESSION = [];
+    session_start();
   }
 
 

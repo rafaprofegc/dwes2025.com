@@ -51,10 +51,13 @@ abstract class ORMBase {
     $propiedades = $fila->toArray();
     $columnas = array_keys($propiedades);
 
+    // Quitar las ñ 
+    $columnasSinÑ = array_map(fn($c) => str_replace("ñ", "n", $c), $columnas);
+
     $sql = "INSERT INTO {$this->tabla} ";
     $sql.= "(" . implode(", ", $columnas) . ") ";
-    $sql.= "VALUES (:" . implode(", :", $columnas) . ")";
-    //VALUES(:referencia, :descripcion, :pvp, :dto_venta)
+    $sql.= "VALUES (:" . implode(", :",$columnasSinÑ) . ")";
+    
 
     $stmt = $this->cbd->prepare($sql);
     /*
@@ -65,7 +68,8 @@ abstract class ORMBase {
       fn($valor, $columna) => $stmt->bindValue(":$columna", $valor));
     */
     foreach( $propiedades as $columna => $valor ) {
-      $stmt->bindValue(":$columna", $valor);
+      $columnaSinÑ = str_replace("ñ","n",$columna);
+      $stmt->bindValue(":$columnaSinÑ", $valor);
     }
     return $stmt->execute();
   }

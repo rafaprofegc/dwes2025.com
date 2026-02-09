@@ -27,6 +27,7 @@ class Controlador {
 
       new Peticion("GET", "#^/login$#", null, "VFormLogin"),
       new Peticion("POST", "#^/login$#", "MLogin", null),
+      new Peticion("GET", "#^/logout$#", "MLogout", null, true),
 
       new Peticion("GET", "#^/resenas/(\w+)/new$#", "MNewReseña", "VNewReseña"),
       new Peticion("POST", "#^/resenas$#", "MSaveReseña", "VSaveReseña", true )
