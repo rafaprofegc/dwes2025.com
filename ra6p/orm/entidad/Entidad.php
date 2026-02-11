@@ -1,7 +1,9 @@
 <?php
 namespace ra6p\orm\entidad;
 
-abstract class Entidad {
+use JsonSerializable;
+
+abstract class Entidad implements JsonSerializable {
 
   public static abstract function getTipos(): array;
 
@@ -104,6 +106,10 @@ abstract class Entidad {
     array_walk($datos, function(mixed $valor, string $propiedad) {
       $this->__set($propiedad, $valor);
     });
+  }
+
+  public function jsonSerialize(): mixed {
+    return $this->toArray();
   }
 }
 ?>
