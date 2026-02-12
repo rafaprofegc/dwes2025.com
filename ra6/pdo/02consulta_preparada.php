@@ -21,6 +21,11 @@ try {
   $sql.= "FROM articulo ";
   $sql.= "WHERE pvp > ? AND categoria = ? AND und_vendidas > ?";
 
+  // 2ª forma de especificar los parámetros: con un nombre
+  $sql = "SELECT referencia, descripcion, pvp, categoria, und_vendidas ";
+  $sql.= "FROM articulo ";
+  $sql.= "WHERE pvp > :pvp AND categoria = :categoria AND und_vendidas > :undVendidas";
+
   // Crear la sentencia preparada. Método prepare()
   $stmt = $pdo->prepare($sql);
 
@@ -29,7 +34,7 @@ try {
   - Asigna el valor de una variable al parámetro cuando se ejecute la sentencia.
   - Obligatoriamente, tiene que usarse una variable.
   - Se invoca tantas veces como parámetros haya, una por parámetro.
-  - Si el parámetro biene en la forma ?, se indica el número de orden y la variable
+  - Si el parámetro viene en la forma ?, se indica el número de orden y la variable
   - NO hay que preocuparse por el tipo de datos, PDO se encarga de convertirlos.
   */
 
@@ -37,10 +42,30 @@ try {
   $categoria = "TV";
   $und_vendidas = 2;
   // Si los parámetros on ?
+  /*
   $stmt->bindParam(1, $pvp);
   $stmt->bindParam(2, $categoria);
   $stmt->bindParam(3, $und_vendidas);
+  
+  $stmt->bindParam("pvp", $pvp);   // Puedo omitir los : en el nombre del parámetro
+  $stmt->bindParam(":categoria", $categoria);
+  $stmt->bindParam(":undVendidas", $und_vendidas);
+  */
 
+  /* 2ª Forma de asignar los valores de los parámetros
+    - Asignar el valor de una expresión inmediatamente.
+    - Se emplea el método bindValue()
+    - El argumento con el valor del parámetro puede ser una expresión
+    - Si el parámetro viene en la forma ?, se indica el número de orden y la expresión.
+  
+  $stmt->bindValue(3, $und_vendidas + 2);
+  $stmt->bindValue(2, "ACIN");
+  $stmt->bindValue(1, $pvp - 2);
+  */
+  $stmt->bindValue("pvp", $pvp - 2);
+  $stmt->bindValue(":categoria", "ACIN");
+  $stmt->bindValue(":undVendidas", $und_vendidas + 2);
+  
   // A partir de aquí puedo cambiar el valor de $pvp, $categoria y $und_vendidas
   // Al ejecutar la sentencia, el valor que tengan en ese momento se usará
   // para los parámetros.

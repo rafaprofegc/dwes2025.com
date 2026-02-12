@@ -23,3 +23,11 @@ header {
   border-bottom: 0.2em outset gray;
   padding: 1em;
 }
+
+.enlinea {
+  display:flex;
+  flex-direction: row;
+  gap: 0.5em;
+
+  align-items: center;
+}
