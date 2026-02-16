@@ -24,4 +24,32 @@ class Ruta {
     $this->perfiles = $perfiles;
   }
 
+  public function esIgual(string $metodoHTTP, string $uriPeticion): bool {
+    return $this->metodoHTTP === $metodoHTTP && 
+      preg_match($this->expRegURI, $uriPeticion);
+  }
+
+  public function getRequiereAuth(): bool {
+    return $this->requiereAuth;
+  }
+
+  public function getPerfiles(): array {
+    return $this->perfiles;
+  }
+
+  public function getClase(): string {
+    return $this->claseModelo;
+  }
+
+  public function getMetodo(): string {
+    return $this->metodo;
+  }
+  
+  public function getExpRegURI(): string {
+    return $this->expRegURI;
+  }
+
+  public function getMetodoHTTP(): string {
+    return $this->metodoHTTP;
+  }
 }
