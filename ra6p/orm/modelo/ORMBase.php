@@ -18,8 +18,19 @@ abstract class ORMBase {
 
   // Read
   public function getAll(): array {
-    $sql = "SELECT * FROM {$this->tabla}";
+    $sql = "SELECT * FROM {$this->tabla} ";
+
+    // Verificar si hay filtro por descripción
+    if( isset($_GET['descripcion']) ) {
+      $sql.= "WHERE descripcion LIKE :descripcion";
+      $valor = filter_input(INPUT_GET, 'descripcion', FILTER_SANITIZE_SPECIAL_CHARS);
+    }
+
     $stmt = $this->cbd->prepare($sql);
+    if( isset($valor) ) {
+      $stmt->bindValue(':descripcion', "%$valor%");
+    }
+
     $stmt->execute();
     $filas = [];
     while( $fila = $stmt->fetch() ) {
@@ -75,12 +86,12 @@ abstract class ORMBase {
   }
 
   // Update
-  public function update(mixed $id, Entidad $fila): bool {
+  public function update(mixed $id, Entidad | array $fila): bool {
     // UPDATE <tabla>
     // SET <col1> = <:valor1>, <col2> = <:valor2>, ...
     // WHERE <pk> = <:pk>;
 
-    $propiedades = $fila->toArray();
+    $propiedades = $fila instanceof Entidad ? $fila->toArray() : $fila;
     $sql = "UPDATE {$this->tabla} ";
     $columnas = array_map( fn($columna): string => "$columna = :$columna", 
       array_keys($propiedades));

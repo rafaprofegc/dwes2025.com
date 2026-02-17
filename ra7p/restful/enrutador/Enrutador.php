@@ -58,11 +58,13 @@ class Enrutador {
       if( $ruta === null ) throw new ErrorServicio(404, ErrorServicio::ERROR_404, "Not found");
 
       // Comprobar si se requiere usuario autenticado
+      /*
       if( $ruta->getRequiereAuth() ) {
         if( !Auth::check() ) {
           throw new ErrorServicio(401, ErrorServicio::ERROR_401, "Unauthorized");
         }
       }
+      */
 
       /* Comprobar los permisos del usuario autenticado
       if( $ruta->getRequiereAuth() ) {
@@ -88,7 +90,7 @@ class Enrutador {
         case 'PUT':
         case 'PATCH':
         case 'DELETE': {
-
+          RespuestaFactory::noContent();
           break;
         }
       }
