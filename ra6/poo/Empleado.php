@@ -18,7 +18,7 @@ class Empleado {
   // Definición de constantes de clase
   // const <CONSTANTE1> = <valor_cte1>;
   public const float IRPF = 0.2;
-  const float SS = 0.05;
+  public const float SS = 0.05;
   const float SALARIO_BASE = 2000;
 
   // Definición de propiedades estáticas
