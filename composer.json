@@ -5,7 +5,8 @@
   "autoload": {
     "psr-4": {
       "EN\\": "ra6/poo/EN",
-      "ra5\\": "ra5/"
+      "ra5\\": "ra5/",
+      "ra6\\": "ra6/"
     }
   }
 }
