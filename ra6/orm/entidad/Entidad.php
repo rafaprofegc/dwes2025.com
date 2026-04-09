@@ -55,7 +55,7 @@ abstract class Entidad {
   public function toArray(): array {
     $propiedades = get_object_vars($this);
 
-    $tipos = self::getTipos();
+    $tipos = static::getTipos();
 
     array_walk($propiedades, function(mixed $valor, string $columna) use ($tipos) {
       switch( $tipos[$columna] ) {

@@ -5,6 +5,7 @@ use ra5\util\Html;
 use ra6\orm\bd\BDFactory;
 use ra6\orm\modelo\ORMArticulo;
 use ra6\orm\entidad\Articulo;
+use ra6\orm\entidad\Entidad;
 
 Html::inicioHtml("Prueba de las clases ORM", ["/estilos/general.css", "/estilos/tabla.css"]);
 $ormArticulo = new ORMArticulo(BDFactory::create());
@@ -52,7 +53,7 @@ echo <<<TABLA
 </table>
 TABLA;
 
-$articulo = new Articulo(["ACIN0051", "Cable HDMI", 3.5, 0.15, 0, 5, new DateTime('2025-05-10'), 'ACIN', 'N']);
+$articulo = new Articulo(["ACIN0052", "Cable HDMI", 3.5, 0.15, 0, 5, new DateTime('2025-05-10'), 'ACIN', 'N']);
 try {
   if( $ormArticulo->insert($articulo) ) {
     echo "<h3>Artículo con referencia {$articulo->referencia} insertado</h3>";
@@ -64,4 +65,31 @@ catch( Exception $e ) {
 
 $articuloInsertado = $ormArticulo->get([$articulo->referencia]);
 
+$articuloInsertado->descripcion = "Cable HDMI v1.4";
+$articuloInsertado->pvp = 6.75;
+$articuloInsertado->dto_venta = 0.25;
+$articuloInsertado->und_disponibles = 10;
+
+try {
+  if( $ormArticulo->update(['ACIN0052'], $articuloInsertado) ) {
+    echo "<h3>Artículo con referencia {$articulo->referencia} modificado</h3>";
+  }
+}
+catch( Exception $e) {
+  Html::mostrarError($e);
+}
+
+$articuloModificado = $ormArticulo->get([$articuloInsertado->referencia]);
+echo <<<ARTICULO
+<h3>Artículo {$articuloModificado->referencia}</h3>
+<p>
+Descripción: {$articuloModificado->descripcion}<br>
+PVP: {$articuloModificado->pvp}€<br>
+Dto Venta: {$articuloModificado->dto_venta}<br>
+Und Vendidas: {$articuloModificado->und_vendidas}<br>
+Und Disponibles: {$articuloModificado->und_disponibles}<br>
+Fecha Disponible: {$articuloModificado->fecha_disponible->format(Articulo::FORMATO_FECHA_ES)}<br>
+Categoría: {$articuloModificado->categoria}<br>
+Tipo IVA: {$articuloModificado->tipo_iva}</p>
+ARTICULO;
 ?>

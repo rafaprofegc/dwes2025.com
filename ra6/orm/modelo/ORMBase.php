@@ -68,10 +68,48 @@ abstract class ORMBase {
   }
 
   public function update(array $id, Entidad $datos): bool {
-    return true;
+    // UPDATE tabla 
+    // SET columna1 = :columna1, columna2 = :columna2, ...
+    // WHERE pk1 = :pk1 AND pk2 = :pk2 ...
+
+    // $propiedades['referencia'] = 'ACIN0010';
+    // $propiedades['pvp'] = 2.75;
+    $propiedades = $datos->toArray();
+    $sql = "UPDATE {$this->tabla} ";
+
+    // $columnas = ['referencia', 'descripcion', 'pvp', 'dto_venta', ...]
+    $columnas = array_keys($propiedades);
+    // $parametros = ["referencia = :referencia", "descripcion = :descripcion", "pvp = :pvp", .... ]
+    $parametros = array_map(fn($columna) => "$columna = :$columna", $columnas);
+
+    // SET referencia = :referencia, descripcion = :descripcion, pvp = :pvp, ....
+    $sql .= "SET " . implode(", ",  $parametros);
+
+    $sql.= $this->whereID();
+
+    $stmt = $this->pdo->prepare($sql);
+
+    // Vincular los parámetros de las columnas que se actualizan
+    foreach( $propiedades as $columna => $valor ) {
+      $stmt->bindValue(":$columna", $valor);
+    }
+
+    // Vincular los valores de la clave primaria
+    array_map( fn($columna, $valor) => $stmt->bindValue(":pk_$columna", $valor), 
+      $this->clavePrimaria, $id);
+
+    return $stmt->execute();
   }
 
   public function delete(array $id): bool {
+    $sql = "DELETE from {$this->tabla} "  . $this->whereID();
+    $stmt = $this->pdo->prepare($sql);
+    
+    array_map( fn($columna, $valor) => $stmt->bindValue(":pk_$columna", $valor), 
+      $this->clavePrimaria, $id);
+
+    return $stmt->execute();
+
     return true;
   }
 
