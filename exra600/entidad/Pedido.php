@@ -10,7 +10,7 @@ class Pedido {
 
   public function __construct(array $datos) {
     foreach($datos as $columna => $valor) {
-      $this->__set($columna,$valor);
+      $this->__set($columna, $valor);
     }
   }
 
@@ -24,9 +24,17 @@ class Pedido {
   public function __set(string $propiedad, mixed $valor): void {
     if( property_exists($this, $propiedad) ) {
       if( $propiedad === "fecha" ) {
-        
+        $this->$propiedad = $valor instanceof \DateTime ? $valor : new \DateTime($valor);
       }
-      $this->$propiedad = $valor;
+      else if( $propiedad === "npedido" ) {
+        $this->$propiedad = intval($valor);
+      }
+      else if( $propiedad === "total_pedido") {
+        $this->$propiedad = floatval($valor);
+      }
+      else {
+        $this->$propiedad = $valor;
+      }
     }
   }
 }

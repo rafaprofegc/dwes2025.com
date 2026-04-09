@@ -20,7 +20,6 @@ if( isset( $_GET['cerrar']) ) {
   CerrarSesion();
 }
 
-
 if( $_SERVER['REQUEST_METHOD'] === "GET") {
   Html::inicioHtml("Autenticación de cliente", 
     ["/exra600/estilos/general.css", "/exra600/estilos/formulario.css"]);
