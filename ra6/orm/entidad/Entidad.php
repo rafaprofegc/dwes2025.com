@@ -25,7 +25,7 @@ abstract class Entidad {
     }
   }
 
-  public function __cast(string $propiedad, ?string $valor): mixed {
+  public function __cast(string $propiedad, mixed $valor): mixed {
     $tiposDatos = static::getTipos();
     if( in_array($tiposDatos[$propiedad], ['int', 'float']) ) {
       if( $valor !== null && !is_numeric($valor) ) {
@@ -43,7 +43,7 @@ abstract class Entidad {
         break;
       }
       case \DateTime::class: {
-        return $valor ? new \DateTime($valor) : null;
+        return $valor ? ($valor instanceof \DateTime ? $valor : new \DateTime($valor)) : null;
         break;
       }
       default: {

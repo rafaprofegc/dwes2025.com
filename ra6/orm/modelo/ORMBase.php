@@ -56,13 +56,23 @@ abstract class ORMBase {
     // INSERT INTO articulo
     // VALUES (referencia = :referencia, ..., pvp = :pvp)
 
-    $columnas = array_map(fn($columna) => "$columna = :$columna", array_keys($propiedades));
+    $columnas = array_map(fn($columna) => ":$columna", array_keys($propiedades));
 
     $sql = "INSERT INTO {$this->tabla} ";
     $sql.= "VALUES (" . implode(", ", $columnas) . ")";
    
     $stmt = $this->pdo->prepare($sql);
-    array_walk($propiedades, fn($valor, $columna) => $stmt->bindValue(":$columna", $valor));
+    foreach( $propiedades as $columna => $valor) {
+      $valor = $valor instanceof \DateTime ? $valor->format(Entidad::FORMATO_FECHA_MYSQL) : $valor;
+      $stmt->bindValue(":$columna", $valor);
+    }
+
+    /*
+    array_walk($propiedades, function($valor, $columna) use($stmt) {
+      $valor = $valor instanceof \DateTime ? $valor->format(Entidad::FORMATO_FECHA_MYSQL) : $valor;
+      $stmt->bindValue(":$columna", $valor);
+    });
+    */
 
     return $stmt->execute();
   }
@@ -91,6 +101,8 @@ abstract class ORMBase {
 
     // Vincular los parámetros de las columnas que se actualizan
     foreach( $propiedades as $columna => $valor ) {
+      $valor = $valor instanceof \DateTime ? $valor->format(Entidad::FORMATO_FECHA_MYSQL) : $valor;
+      
       $stmt->bindValue(":$columna", $valor);
     }
 
@@ -118,10 +130,16 @@ abstract class ORMBase {
     // En linea_pedido $this->clavePrimaria = ['npedido', 'nlinea'];
     // WHERE npedido = :pk_npedido AND nlinea = :pk_nlinea;
     $condiciones = array_map( fn($columna) => "$columna = :pk_$columna", $this->clavePrimaria);
-    $clausulaWHERE = "WHERE " . implode(" AND ", $condiciones);
+    $clausulaWHERE = " WHERE " . implode(" AND ", $condiciones);
     return $clausulaWHERE;
 
   }
+
+  public function ejecutaSELECT(string $sql, array $parametros ): array {
+    return [];
+
+  }
+  
   public abstract function getClaseEntidad(): string;
     
 

@@ -10,5 +10,4 @@ class ORMArticulo extends ORMBase {
   public function getClaseEntidad(): string {
     return Articulo::class;
   }
-  
 }
