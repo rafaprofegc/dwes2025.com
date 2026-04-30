@@ -1,0 +1,52 @@
+fieldset {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+
+  gap: 0.3em;
+  margin-bottom: 1em;
+
+  justify-items: flex-start;
+  align-items: center;
+
+}
+
+label {
+  color: darkblue;
+  justify-self: flex-end;
+}
+
+input, select, option, textarea, button {
+  padding: 0.2em;
+  font: inherit;
+}
+
+form {
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form img {
+  width: 128px;
+}
+
+.boton_bh {
+  padding: 1em;
+  background-color: lightsalmon;
+  color: darkcyan;
+  font: 1.5em;
+  border: 0.1em solid transparent;
+  border-radius: 0.2em;
+}
+
+.boton_bh:hover {
+  border: 0.1em solid darkcyan;
+}
+
+.bh {
+  margin: 1em;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

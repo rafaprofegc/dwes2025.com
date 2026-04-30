@@ -135,6 +135,10 @@ abstract class ORMBase {
 
   }
 
+  public function getLastInsertId(): int {
+    return $this->pdo->lastInsertId();
+  }
+
   public function ejecutaSELECT(string $sql, array $parametros ): array {
     return [];
 
