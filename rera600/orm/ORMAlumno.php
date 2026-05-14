@@ -11,7 +11,7 @@ class ORMAlumno {
   protected PDO $pdo;
 
   public function __construct() {
-    $dsn = "mysql:host=cpd.informatica.org;port=9990;dbname=tiendaol;charset=utf8mb4";
+    $dsn = "mysql:host=cpd.informatica.iesgrancapitan.org;port=9990;dbname=tiendaol;charset=utf8mb4";
     $opciones = [
       PDO::ATTR_ERRMODE             => PDO::ERRMODE_EXCEPTION,
       PDO::ATTR_DEFAULT_FETCH_MODE  => PDO::FETCH_ASSOC,
@@ -36,8 +36,8 @@ class ORMAlumno {
 
   }
 
-  public function listar(string $dni): ?FilaAlumno {
-    $sql = "SELECT * FROM alumno WHERE dni = :$dni";
+  public function buscar(string $dni): ?FilaAlumno {
+    $sql = "SELECT * FROM alumno WHERE dni = :dni";
 
     $stmt = $this->pdo->prepare($sql);
     $stmt->bindValue(":dni", $dni);
