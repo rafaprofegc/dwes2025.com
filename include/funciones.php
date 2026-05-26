@@ -1,6 +1,4 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . "/include/funciones2.php");
-
 function inicioHtml(string $titulo = "Sin título", array $estilos = []) { ?>
   <!DOCTYPE html>
   <html lang="es">
