@@ -1,0 +1,14 @@
+Distribución de Clases en espacio de nombres
+EN
+|----- BD
+|       |---- Conexión
+|       |       |------ ConectarBD.php
+|       |---- Entidades
+|       |       |------ Articulo.php
+|       |       |------ Cliente.php
+|       |---- Usuario.php
+|----- Utils
+|       |---- Html.php
+|----- 01en.php
+
+

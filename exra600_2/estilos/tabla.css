@@ -1,0 +1,20 @@
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  width: 100%;
+}
+
+td, th {
+  border: 0.1em solid blue;
+  padding: 0.2em;
+}
+
+th {
+  background-color: darkmagenta;
+  color: white;
+  border: 0.1em solid darkmagenta;
+}
+
+td {
+  background-color: whitesmoke;
+}

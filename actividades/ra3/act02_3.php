@@ -139,8 +139,7 @@ $mes = $hoy['mon'] + 1; // Se empieza a pagar el 1 del mes siguiente
 $ayo = $hoy['year'];  
 
 for( $mesInicio = 1; $mesInicio <= $plazo; $mesInicio++) {
-  $fecha = "$ayo-$mes-01";
-  echo "Pago del mes $mes/$ayo -> {$mensualidad}<br>";
+  echo "Pago del mes 01/$mes/$ayo -> {$mensualidad}€<br>";
   if( $mes === 12 ) {
     $mes = 1;
     $ayo++;

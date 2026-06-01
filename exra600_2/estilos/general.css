@@ -1,0 +1,33 @@
+html {
+  box-sizing: border-box;
+}
+
+body {
+
+  width: 80%;
+  margin: 1em auto;
+
+  font: 14pt sans-serif;
+  padding: 0.5em;
+
+}
+
+header {
+  text-align: center;
+  font-size: 2em;
+}
+
+#cabecera {
+  text-align: right;
+  font-size: 1em;
+  border-bottom: 0.2em outset gray;
+  padding: 1em;
+}
+
+.enlinea {
+  display:flex;
+  flex-direction: row;
+  gap: 0.5em;
+
+  align-items: center;
+}
