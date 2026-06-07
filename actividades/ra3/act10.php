@@ -15,7 +15,16 @@ $especialidades = [
 function Error(int $codigo): void {
   $errores = [
     1 => 'Datos no válidos',
+    2 => 'Tamaño de archivo no válido',
+    3 => 'No se ha subido el archivo',
+    4 => 'No se pudo subir el archivo',
+    5 => 'El tipo de archivo no es válido',
+    6 => 'El archivo no es válido',
   ];
+
+  echo "<h3>{$errores[$codigo]}</h3>";
+  echo "<p><a href='{$_SERVER['PHP_SELF']}'>Volver a intentarlo</a></p>";
+  exit();
 }
 
 if( $_SERVER['REQUEST_METHOD'] === "GET") {
@@ -27,10 +36,11 @@ if( $_SERVER['REQUEST_METHOD'] === "GET") {
     <input type="text" name="nif" id="nif" size="10" required>
 
     <label for="nombre">Nombre</label>
-    <input type="text" name="nombre" id="nombre" size="40">
+    <input type="text" name="nombre" id="nombre" size="40"<?= isset($nombre) ? " value='$nombre'" : "" ?>>
 
     <label for="especialidad">Especialidad</label>
     <select name="especialidad" id="especialidad" size="1">
+
 <?php
     foreach($especialidades as $clave => $especialidad) {
       echo "<option value='$clave'>$especialidad</option>\n";
@@ -80,8 +90,10 @@ if( $_SERVER['REQUEST_METHOD'] === "POST") {
     Error(5);
   }
 
+  /*
   $pf = fopen($_FILES['archivo']['tmp_name'], "r");
-  $primeraLinea = fgets($pf);
+  $primeraLinea = trim(fgets($pf));
+
   if( $primeraLinea !== $nif ) {
     Error(6);
   }
@@ -92,16 +104,35 @@ if( $_SERVER['REQUEST_METHOD'] === "POST") {
   }
 
   $indiceUltimo = count($lineas) - 1;
-  $ultimaLinea = $lineas[$indiceUltimo];
+  $ultimaLinea = trim($lineas[$indiceUltimo]);
 
+  
   if( $ultimaLinea !== $especialidad ) {
+    Error(6);
+  }
+
+  array_pop($lineas);
+  */
+
+  $lineas = file($_FILES['archivo']['tmp_name'], FILE_IGNORE_NEW_LINES);
+  $primeraLinea = array_shift($lineas);
+  $ultimaLinea = array_pop($lineas);
+  if( $primeraLinea !== $nif || $ultimaLinea !== $especialidad ) {
     Error(6);
   }
 
   echo "<h3>Archivo válido</h3>";
   foreach($lineas as $linea) {
-    echo $linea;
+    echo "$linea<br>";
   }
+
+  // Añado el nombre al archivo
+  $pf = fopen($_FILES['archivo']['tmp_name'], "a");
+  fwrite($pf, $nombre);
+  fclose($pf);
+
+  $archivo = $_SERVER['DOCUMENT_ROOT'] . "/actividades/ra4/{$_FILES['archivo']['name']}";
+  move_uploaded_file($_FILES['archivo']['tmp_name'], $archivo);
 }
 
 finHtml();
