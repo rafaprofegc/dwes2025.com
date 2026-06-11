@@ -8,6 +8,7 @@ class Registro {
   protected string $actividad;
 
   public const string FECHA_MYSQL = "Y-m-d";
+  public const string FECHA_ESPANOL = "d/m/Y G:i:s";
   
   public function __construct( array $datos ) {
     foreach( $datos as $columna => $valor ) {
